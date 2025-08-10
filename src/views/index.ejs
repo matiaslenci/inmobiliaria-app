@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+  </head>
+  <body>
+    <h1><%= title %></h1>
+
+    <% if (error) { %>
+    <p style="color: red"><%= error %></p>
+    <% } %>
+
+    <form action="/consulta" method="POST">
+      <label for="nroCuenta">Número de cuenta:</label>
+      <input type="number" name="nroCuenta" id="nroCuenta" required />
+      <button type="submit">Consultar</button>
+    </form>
+  </body>
+</html>
