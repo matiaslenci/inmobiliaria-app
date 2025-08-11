@@ -20,9 +20,6 @@ export const procesarConsulta = async (req, res) => {
   try {
     const monto = await obtenerSegundoMonto(nroCuenta);
 
-    // Mostrar en consola del servidor
-    console.log(`Cuenta ${nroCuenta} - Segundo monto de vencimiento: ${monto}`);
-
     // Mostrar en la vista
     res.render("resultado", {
       title: "Resultado de consulta",

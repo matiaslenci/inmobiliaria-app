@@ -5,6 +5,11 @@ export const obtenerSegundoMonto = async (
   nroLiquidacion = "2903794"
 ) => {
   try {
+    /**
+     * Realiza una solicitud POST a la URL especificada para obtener las liquidaciones
+     * y luego analiza el HTML para encontrar el monto del segundo vencimiento de la liquidación
+     * especificada por nroLiquidacion.
+     */
     const response = await fetch(
       "https://servicios.santotome.gob.ar:8443/liquidacionesweb/buscarLiquidaciones.do",
       {
@@ -47,7 +52,4 @@ export const obtenerSegundoMonto = async (
   } catch (error) {
     throw new Error(`Error al obtener el monto: ${error.message}`);
   }
-  throw new Error("No se encontró el segundo monto");
-
-  return monto2doVencimiento;
 };
