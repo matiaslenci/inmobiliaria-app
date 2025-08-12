@@ -2,7 +2,7 @@ import { obtenerSegundoMonto } from "../services/consulta.service.js";
 
 export const mostrarFormulario = (req, res) => {
   res.render("index", {
-    title: "Consulta tasas",
+    title: "Consulta Liquidaciones de Agua Corriente y Cloacas",
     error: null,
   });
 };
@@ -11,7 +11,7 @@ export const procesarConsulta = async (req, res) => {
   const { nroCuenta } = req.body;
   if (!nroCuenta) {
     return res.render("index", {
-      title: "Consulta tasas",
+      title: "Consulta Liquidaciones de Agua Corriente y Cloacas",
       error: "Debe ingresar un número de cuenta",
     });
   }

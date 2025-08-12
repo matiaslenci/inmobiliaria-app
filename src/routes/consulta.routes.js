@@ -7,6 +7,6 @@ import {
 const router = Router();
 
 router.get("/", mostrarFormulario);
-router.post("/consulta", procesarConsulta);
+router.post("/consulta-aguas", procesarConsulta);
 
 export default router;

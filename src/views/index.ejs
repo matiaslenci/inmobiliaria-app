@@ -1,101 +1,109 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="/assets/icon.png" />
 
-    <title><%= title %></title>
-    <style>
-      body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f3f4f6;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="/assets/icon.png" />
 
-      .container {
-        background: white;
-        padding: 2rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        max-width: 400px;
-        text-align: center;
-      }
+  <title>
+    <%= title %>
+  </title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f3f4f6;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
 
-      h1 {
-        margin-bottom: 1.5rem;
-        color: #111827;
-      }
+    .container {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
 
-      .error {
-        color: #b91c1c;
-        background: #fee2e2;
-        padding: 0.5rem;
-        border-radius: 6px;
-        margin-bottom: 1rem;
-      }
+    h1 {
+      margin-bottom: 1.5rem;
+      color: #111827;
+    }
 
-      label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 600;
-        color: #374151;
-        text-align: left;
-      }
+    .error {
+      color: #b91c1c;
+      background: #fee2e2;
+      padding: 0.5rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+    }
 
-      input {
-        width: calc(100% - 1.5rem);
-        padding: 0.75rem;
-        margin-bottom: 1rem;
-        border: 1px solid #d1d5db;
-        border-radius: 8px;
-        font-size: 1rem;
-        outline: none;
-        transition: border-color 0.2s ease-in-out;
-      }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #374151;
+      text-align: left;
+    }
 
-      input:focus {
-        border-color: #2563eb;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
-      }
+    input {
+      width: calc(100% - 1.5rem);
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s ease-in-out;
+    }
 
-      button {
-        background-color: #2563eb;
-        color: white;
-        border: none;
-        padding: 0.75rem 1.5rem;
-        border-radius: 8px;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: background-color 0.2s ease-in-out;
-        width: 100%;
-      }
+    input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    }
 
-      button:hover {
-        background-color: #1d4ed8;
-      }
-    </style>
-  </head>
+    button {
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease-in-out;
+      width: 100%;
+    }
 
-  <body>
-    <div class="container">
-      <h1><%= title %></h1>
+    button:hover {
+      background-color: #1d4ed8;
+    }
+  </style>
+</head>
 
-      <% if (error) { %>
-      <div class="error"><%= error %></div>
+<body>
+  <div class="container">
+    <h1>
+      <%= title %>
+    </h1>
+
+    <% if (error) { %>
+      <div class="error">
+        <%= error %>
+      </div>
       <% } %>
 
-      <form action="/consulta" method="POST">
-        <label for="nroCuenta">Número de cuenta:</label>
-        <input type="number" name="nroCuenta" id="nroCuenta" />
-        <button type="submit">Consultar</button>
-      </form>
-    </div>
-  </body>
+        <form action="/consulta-aguas" method="POST">
+          <label for="nroCuenta">Número de cuenta:</label>
+          <input type="number" name="nroCuenta" id="nroCuenta" />
+          <button type="submit">Consultar</button>
+        </form>
+  </div>
+</body>
+
 </html>
