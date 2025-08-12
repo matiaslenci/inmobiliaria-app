@@ -6,67 +6,31 @@
     <link rel="icon" type="image/png" href="/assets/icon.png" />
 
     <title><%= title %></title>
-    <style>
-      body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f3f4f6;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-      }
-
-      .container {
-        background: white;
-        padding: 2rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        max-width: 400px;
-        text-align: center;
-      }
-
-      h1 {
-        margin-bottom: 1.5rem;
-        color: #111827;
-      }
-
-      p {
-        margin: 0.5rem 0;
-        color: #374151;
-        font-size: 1rem;
-      }
-
-      strong {
-        color: #2563eb;
-        font-size: 1.1rem;
-      }
-
-      a {
-        display: inline-block;
-        margin-top: 1.5rem;
-        text-decoration: none;
-        background-color: #2563eb;
-        color: white;
-        padding: 0.75rem 1.5rem;
-        border-radius: 8px;
-        transition: background-color 0.2s ease-in-out;
-      }
-
-      a:hover {
-        background-color: #1d4ed8;
-      }
-    </style>
   </head>
 
   <body>
-    <div class="container">
-      <h1>Resultado de consulta</h1>
-      <p>Número de cuenta: <%= nroCuenta %></p>
-      <p>Monto de vencimiento: <strong> <%= monto %> </strong></p>
-      <a href="/">Volver</a>
-    </div>
+    <h1><%= title %></h1>
+
+    <table border="1" cellpadding="5" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Cuenta Agua</th>
+          <th>Monto Agua</th>
+          <th>Cuenta Tasa</th>
+          <th>Monto Tasas</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for(let i=0; i < Math.max(cuentasAgua.length, cuentasTasas.length);
+        i++) { %>
+        <tr>
+          <td><%= cuentasAgua[i] || "-" %></td>
+          <td><%= montosAgua[i] || "-" %></td>
+          <td><%= cuentasTasas[i] || "-" %></td>
+          <td><%= montosTasas[i] || "-" %></td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
   </body>
 </html>

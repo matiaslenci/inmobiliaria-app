@@ -31,34 +31,20 @@
     </style>
   </head>
   <body>
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
-          <div class="card p-4">
-            <h3 class="text-center mb-4">📂 Subir archivo Excel</h3>
-            <form action="/upload" method="post" enctype="multipart/form-data">
-              <div class="mb-3">
-                <label for="excelFile" class="form-label"
-                  >Selecciona un archivo Excel</label
-                >
-                <input
-                  type="file"
-                  class="form-control"
-                  id="excelFile"
-                  name="excelFile"
-                  accept=".xlsx,.xls"
-                  required
-                />
-              </div>
-              <div class="d-grid">
-                <button type="submit" class="btn btn-custom">
-                  Subir y procesar
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+      <label for="archivoExcel">Subí archivo Excel</label>
+      <input
+        type="file"
+        name="archivoExcel"
+        id="archivoExcel"
+        accept=".xlsx,.xls"
+        required
+      />
+      <button type="submit">Procesar</button>
+    </form>
+
+    <% if (error) { %>
+    <p style="color: red"><%= error %></p>
+    <% } %>
   </body>
 </html>
