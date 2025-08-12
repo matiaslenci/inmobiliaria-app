@@ -17,6 +17,15 @@ export const procesarConsulta = async (req, res) => {
   }
 
   try {
+    /*    const arrayCuentas = [8535, 62566, 13653, 2426];
+
+    for (const cuenta of arrayCuentas) {
+      let monto = await obtenerSegundoMonto(cuenta);
+
+      console.log(cuenta);
+      console.log(monto);
+    }
+ */
     const monto = await obtenerSegundoMonto(nroCuenta);
 
     // Mostrar en la vista
