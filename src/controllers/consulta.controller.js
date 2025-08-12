@@ -47,9 +47,6 @@ export const procesarConsulta = async (req, res) => {
 
     const montosAgua = [];
     const montosTasas = [];
-    const montoAgua2 = await obtenerMontoAgua(cuentasAgua[0]);
-
-    console.log(montoAgua2);
 
     // Por cada cuenta, obtenemos el monto y lo guardamos en el array correspondiente
     for (let i = 0; i < cuentasAgua.length; i++) {
