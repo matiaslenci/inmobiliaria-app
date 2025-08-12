@@ -9,7 +9,6 @@ export const mostrarFormulario = (req, res) => {
 
 export const procesarConsulta = async (req, res) => {
   const { nroCuenta } = req.body;
-
   if (!nroCuenta) {
     return res.render("index", {
       title: "Consulta tasas",
