@@ -17,13 +17,6 @@ export const uploadExcel = (req, res) => {
   });
 };
 
-export const mostrarFormulario = (req, res) => {
-  res.render("aguas", {
-    title: "Consulta Liquidaciones de Agua Corriente y Cloacas",
-    error: null,
-  });
-};
-
 export const procesarConsulta = async (req, res) => {
   if (!req.file) {
     return res.render("index", {
@@ -39,7 +32,20 @@ export const procesarConsulta = async (req, res) => {
     const workbook = xlsx.readFile(filePath);
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
+
+    // Convertir a JSON usando encabezados reales
     const jsonData = xlsx.utils.sheet_to_json(worksheet);
+
+    // Validar que existan las columnas necesarias
+    const firstRow = jsonData[0] || {};
+    if (!("CUENTA AGUA" in firstRow) || !("CUENTA TASA" in firstRow)) {
+      fs.unlinkSync(req.file.path); // eliminar archivo subido
+      return res.render("index", {
+        title: "Consulta Liquidaciones",
+        error:
+          "No se encuentran las columnas 'CUENTA AGUA' y/o 'CUENTA TASA' en el archivo",
+      });
+    }
 
     const cuentasAgua = [];
     const cuentasTasas = [];
@@ -93,38 +99,36 @@ export const procesarConsulta = async (req, res) => {
   }
 };
 
-export const procesarConsulta2 = async (req, res) => {
-  const { nroCuenta } = req.body;
-  if (!nroCuenta) {
-    return res.render("aguas", {
-      title: "Consulta Liquidaciones de Agua Corriente y Cloacas",
-      error: "Debe ingresar un número de cuenta",
-    });
-  }
+export const descargarPlantilla = (req, res) => {
+  const columnas = [
+    [
+      "DIRECCION INMUEBLE",
+      "CUENTA TASA",
+      "CUENTA AGUA",
+      "AUMENTO",
+      "VALOR INICIAL",
+      "INICIO",
+      "FINALIZACIÓN",
+    ],
+  ];
 
-  try {
-    /*    const arrayCuentas = [8535, 62566, 13653, 2426];
+  // Crear libro y hoja
+  const workbook = xlsx.utils.book_new();
+  const worksheet = xlsx.utils.aoa_to_sheet(columnas);
 
-    for (const cuenta of arrayCuentas) {
-      let monto = await obtenerSegundoMonto(cuenta);
+  xlsx.utils.book_append_sheet(workbook, worksheet, "Plantilla");
 
-      console.log(cuenta);
-      console.log(monto);
-    }
- */
-    const monto = await obtenerMontoAgua(nroCuenta);
+  // Convertir a buffer
+  const buffer = xlsx.write(workbook, { type: "buffer", bookType: "xlsx" });
 
-    // Mostrar en la vista
-    res.render("resultado", {
-      title: "Resultado de consulta",
-      nroCuenta,
-      monto,
-    });
-  } catch (error) {
-    console.error("Error al consultar:", error);
-    res.render("aguas", {
-      title: "Consulta tasas",
-      error: "No se pudo obtener la información",
-    });
-  }
+  // Enviar para descargar
+  res.setHeader(
+    "Content-Disposition",
+    "attachment; filename=plantilla_tasas.xlsx"
+  );
+  res.setHeader(
+    "Content-Type",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  );
+  res.send(buffer);
 };
