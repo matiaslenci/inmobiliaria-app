@@ -4,6 +4,7 @@ import {
 } from "../services/consulta.service.js";
 import multer from "multer";
 import xlsx from "xlsx";
+import fs from "fs";
 
 const upload = multer({ dest: "uploads/" });
 
@@ -32,7 +33,10 @@ export const procesarConsulta = async (req, res) => {
   }
 
   try {
-    const workbook = xlsx.readFile(req.file.path);
+    const filePath = req.file.path;
+
+    // Leer el Excel
+    const workbook = xlsx.readFile(filePath);
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
     const jsonData = xlsx.utils.sheet_to_json(worksheet);
@@ -48,7 +52,7 @@ export const procesarConsulta = async (req, res) => {
     const montosAgua = [];
     const montosTasas = [];
 
-    // Por cada cuenta, obtenemos el monto y lo guardamos en el array correspondiente
+    // Procesar montos de agua
     for (let i = 0; i < cuentasAgua.length; i++) {
       try {
         const montoAgua = await obtenerMontoAgua(cuentasAgua[i]);
@@ -58,6 +62,7 @@ export const procesarConsulta = async (req, res) => {
       }
     }
 
+    // Procesar montos de tasas
     for (let i = 0; i < cuentasTasas.length; i++) {
       try {
         const montoTasas = await obtenerMontoTasas(cuentasTasas[i]);
@@ -67,7 +72,11 @@ export const procesarConsulta = async (req, res) => {
       }
     }
 
-    // Enviar los arrays de montos a la vista
+    // Eliminar archivo después de procesarlo
+    fs.unlink(filePath, (err) => {
+      if (err) console.error("Error eliminando el archivo:", err);
+    });
+
     res.render("resultado", {
       title: "Resultados Consulta",
       cuentasAgua,
