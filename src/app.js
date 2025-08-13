@@ -2,7 +2,6 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import consultaRoutes from "./routes/consulta.routes.js";
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -20,6 +19,7 @@ app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "../public")));
 
 // Rutas
+//app.use("/aguas", consultaRoutes);
 app.use("/", consultaRoutes);
 
 export default app;
