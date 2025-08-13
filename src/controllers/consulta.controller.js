@@ -89,6 +89,9 @@ export const procesarConsulta = async (req, res) => {
       cuentasTasas,
       montosAgua,
       montosTasas,
+      totalRecords: Math.max(cuentasAgua.length, cuentasTasas.length),
+      waterAccounts: cuentasAgua.filter((c) => c && c !== "-").length,
+      taxAccounts: cuentasTasas.filter((c) => c && c !== "-").length,
     });
   } catch (error) {
     console.error(error);
