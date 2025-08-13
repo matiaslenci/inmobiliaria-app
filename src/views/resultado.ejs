@@ -538,7 +538,14 @@
             <tbody>
               <% for(let i = 0; i < totalRecords; i++) { %>
               <tr>
-                <td class="empty-cell">-</td>
+                <td>
+                  <% if (typeof direcciones !== 'undefined' && direcciones[i] &&
+                  direcciones[i] !== '-') { %>
+                  <span class="account-number"><%= direcciones[i] %></span>
+                  <% } else { %>
+                  <span class="empty-cell">-</span>
+                  <% } %>
+                </td>
                 <td>
                   <% if (typeof cuentasAgua !== 'undefined' && cuentasAgua[i] &&
                   cuentasAgua[i] !== '-') { %>

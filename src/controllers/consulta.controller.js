@@ -48,9 +48,12 @@ export const procesarConsulta = async (req, res) => {
     }
 
     const cuentasAgua = [];
+    const direcciones = [];
     const cuentasTasas = [];
 
     jsonData.forEach((row) => {
+      if (row["DIRECCION INMUEBLE"])
+        direcciones.push(String(row["DIRECCION INMUEBLE"]));
       if (row["CUENTA AGUA"]) cuentasAgua.push(String(row["CUENTA AGUA"]));
       if (row["CUENTA TASA"]) cuentasTasas.push(String(row["CUENTA TASA"]));
     });
@@ -85,6 +88,7 @@ export const procesarConsulta = async (req, res) => {
 
     res.render("resultado", {
       title: "Resultados Consulta",
+      direcciones,
       cuentasAgua,
       cuentasTasas,
       montosAgua,
