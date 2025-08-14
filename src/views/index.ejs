@@ -611,6 +611,7 @@
 
         const files = e.dataTransfer.files;
         if (files.length > 0) {
+          fileInput.files = files;
           handleFileSelect(files[0]);
         }
       });
