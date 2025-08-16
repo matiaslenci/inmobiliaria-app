@@ -56,6 +56,7 @@ export const processRegister = async (req, res) => {
       }
     });
 
+    // Manejar error
     if (error) {
       console.error("Error en registro:", error);
       return res.render("register", { 
@@ -65,17 +66,13 @@ export const processRegister = async (req, res) => {
       });
     }
 
+    // Usuario creado pero requiere confirmación de email
     if (data.user && !data.session) {
-      // Usuario creado pero requiere confirmación de email
-      return res.render("register", { 
-        error: null,
-        success: "Cuenta creada exitosamente. Por favor, revisa tu email para confirmar la cuenta.",
-        user: res.locals.user
-      });
+      return res.redirect("/auth/check-email");
     }
 
+    // Usuario creado y autenticado automáticamente
     if (data.session) {
-      // Usuario creado y autenticado automáticamente
       res.cookie("sb_access_token", data.session.access_token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -95,6 +92,7 @@ export const processRegister = async (req, res) => {
     });
   }
 };
+
 
 // Procesar login
 export const login = async (req, res) => {

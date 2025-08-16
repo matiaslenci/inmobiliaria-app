@@ -15,6 +15,9 @@ const router = express.Router();
 router.get("/login", loginPage);
 router.get("/register", registerPage);
 router.get("/auth/confirm", confirmEmail);
+router.get("/auth/check-email", (req, res) => {
+  res.render("check-email"); // vista EJS con el aviso
+});
 
 // Procesamiento de formularios
 router.post("/login", login);
