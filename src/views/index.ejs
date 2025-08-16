@@ -550,21 +550,27 @@
   </head>
   <body>
     <!-- Navigation -->
+    <!-- Navigation -->
     <nav class="navbar">
       <div class="navbar-content">
-        <a href="#" class="navbar-brand">
+        <a href="/" class="navbar-brand">
           <i class="fas fa-calculator"></i>
           <p class="navbar-title">Tasas Inmobiliarias</p>
         </a>
         <div class="navbar-actions">
-          <a href="#" class="btn-nav btn-nav-ghost">
-            <i class="fas fa-sign-in-alt"></i>
-            Iniciar Sesión
+          <% if (user) { %>
+          <span class="user-email"><%= user.email %></span>
+          <a href="/logout" class="btn-nav btn-nav-ghost">
+            <i class="fas fa-sign-out-alt"></i> Cerrar sesión
           </a>
-          <a href="#" class="btn-nav btn-nav-primary">
-            <i class="fas fa-user-plus"></i>
-            Registrarse
+          <% } else { %>
+          <a href="/login" class="btn-nav btn-nav-ghost">
+            <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
           </a>
+          <a href="/register" class="btn-nav btn-nav-primary">
+            <i class="fas fa-user-plus"></i> Registrarse
+          </a>
+          <% } %>
         </div>
       </div>
     </nav>
@@ -700,10 +706,7 @@
 
     <!-- Footer -->
     <footer class="footer">
-      <p>
-        &copy; 2025 Calculadora de Tasas Inmobiliarias. Todos los derechos
-        reservados.
-      </p>
+      <p>&copy; 2025 Calculadora de Tasas Inmobiliarias</p>
     </footer>
 
     <script>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmación de cuenta</title>
+</head>
+
+<body>
+    <h2>Procesando confirmación...</h2>
+    <script>
+        // Parsear el hash
+        const hash = window.location.hash.substring(1); // saca el "#"
+        const params = new URLSearchParams(hash);
+
+        const access_token = params.get("access_token");
+        const refresh_token = params.get("refresh_token");
+        const type = params.get("type");
+
+        if (access_token) {
+            // Mandar tokens a tu servidor
+            fetch("/auth/save-session", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ access_token, refresh_token, type })
+            }).then(() => {
+                window.location.href = "/profile"; // redirigir al perfil
+            });
+        } else {
+            document.body.innerHTML = "<h2>El enlace es inválido o expiró</h2>";
+        }
+    </script>
+</body>
+
+</html>
