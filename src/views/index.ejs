@@ -560,9 +560,12 @@
         <div class="navbar-actions">
           <% if (user) { %>
           <span class="user-email"><%= user.email %></span>
-          <a href="/logout" class="btn-nav btn-nav-ghost">
-            <i class="fas fa-sign-out-alt"></i> Cerrar sesión
-          </a>
+          <form action="/logout" method="POST" style="display: inline">
+            <button type="submit" class="btn-nav btn-nav-primary">
+              <i class="fas fa-sign-out-alt"></i>
+              Cerrar Sesión
+            </button>
+          </form>
           <% } else { %>
           <a href="/login" class="btn-nav btn-nav-ghost">
             <i class="fas fa-sign-in-alt"></i> Iniciar Sesión

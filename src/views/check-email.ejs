@@ -1,16 +1,82 @@
 <!DOCTYPE html>
 <html lang="es">
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Revisa tu correo</title>
-</head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+      }
 
-<body>
-    <h2>¡Registro exitoso!</h2>
-    <p>Te enviamos un correo con el enlace de confirmación. Revisa tu bandeja de entrada y sigue el enlace para activar
-        tu cuenta.</p>
-    <a href="/auth/login">Ir al inicio de sesión</a>
-</body>
+      .container {
+        max-width: 600px;
+        margin: 50px auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
 
+      .header {
+        background-color: #4285f4;
+        color: #ffffff;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .header h2 {
+        margin: 0;
+      }
+
+      .content {
+        padding: 30px;
+        text-align: center;
+        color: #333;
+      }
+
+      .content p {
+        font-size: 16px;
+      }
+
+      .button {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 12px 25px;
+        background-color: #4285f4;
+        color: #ffffff;
+        text-decoration: none;
+        font-weight: bold;
+        border-radius: 5px;
+      }
+
+      .footer {
+        padding: 15px;
+        text-align: center;
+        font-size: 12px;
+        color: #aaa;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="header">
+        <h2>¡Registro exitoso!</h2>
+      </div>
+      <div class="content">
+        <p>
+          Te enviamos un correo con el enlace de confirmación. Revisa tu bandeja
+          de entrada y sigue el enlace para activar tu cuenta.
+        </p>
+        <a href="/login" class="button">Ir al inicio de sesión</a>
+      </div>
+      <div class="footer">
+        &copy; 2025 Calculadora de Tasas Inmobiliarias. Todos los derechos
+        reservados.
+      </div>
+    </div>
+  </body>
 </html>
