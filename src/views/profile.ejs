@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mi Perfil - Tasas Inmobiliarias</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/styles.css" />
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="navbar-brand">
+                <i class="fas fa-calculator"></i>
+                <p class="navbar-title">Tasas Inmobiliarias</p>
+            </a>
+            <div class="navbar-actions">
+                <a href="/profile" class="btn-nav btn-nav-ghost active">
+                    <i class="fas fa-user"></i>
+                    Mi Perfil
+                </a>
+                <form action="/logout" method="POST" style="display: inline;">
+                    <button type="submit" class="btn-nav btn-nav-primary">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Cerrar Sesión
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Profile Content -->
+    <div class="container">
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <i class="fas fa-user-circle"></i>
+            </div>
+            <div class="profile-info">
+                <h1>Bienvenido, <%= user.email %>
+                </h1>
+                <p class="profile-subtitle">Miembro desde <%= new Date(user.created_at).toLocaleDateString('es-ES') %>
+                </p>
+            </div>
+        </div>
+
+        <div class="profile-content">
+            <div class="profile-section">
+                <h3><i class="fas fa-info-circle"></i> Información de la Cuenta</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Email:</label>
+                        <span>
+                            <%= user.email %>
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <label>ID de Usuario:</label>
+                        <span>
+                            <%= user.id %>
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <label>Estado:</label>
+                        <span class="status-badge <%= user.email_confirmed_at ? 'status-active' : 'status-pending' %>">
+                            <%= user.email_confirmed_at ? 'Verificado' : 'Pendiente de verificación' %>
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <label>Última actividad:</label>
+                        <span>
+                            <%= new Date(user.last_sign_in_at || user.created_at).toLocaleString('es-ES') %>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <h3><i class="fas fa-cog"></i> Acciones de Cuenta</h3>
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="changePassword()">
+                        <i class="fas fa-key"></i> Cambiar Contraseña
+                    </button>
+                    <button class="btn btn-secondary" onclick="updateEmail()">
+                        <i class="fas fa-envelope"></i> Actualizar Email
+                    </button>
+                    <button class="btn btn-danger" onclick="deleteAccount()">
+                        <i class="fas fa-trash"></i> Eliminar Cuenta
+                    </button>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <h3><i class="fas fa-history"></i> Actividad Reciente</h3>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <div class="activity-content">
+                            <p>Inicio de sesión exitoso</p>
+                            <small>
+                                <%= new Date().toLocaleString('es-ES') %>
+                            </small>
+                        </div>
+                    </div>
+                    <% if (user.email_confirmed_at) { %>
+                        <div class="activity-item">
+                            <i class="fas fa-check-circle"></i>
+                            <div class="activity-content">
+                                <p>Email verificado</p>
+                                <small>
+                                    <%= new Date(user.email_confirmed_at).toLocaleString('es-ES') %>
+                                </small>
+                            </div>
+                        </div>
+                        <% } %>
+                            <div class="activity-item">
+                                <i class="fas fa-user-plus"></i>
+                                <div class="activity-content">
+                                    <p>Cuenta creada</p>
+                                    <small>
+                                        <%= new Date(user.created_at).toLocaleString('es-ES') %>
+                                    </small>
+                                </div>
+                            </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div id="passwordModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-key"></i> Cambiar Contraseña</h3>
+                <span class="close" onclick="closeModal('passwordModal')">&times;</span>
+            </div>
+            <form id="changePasswordForm" class="modal-form">
+                <div class="form-group">
+                    <label for="currentPassword">Contraseña Actual</label>
+                    <input type="password" id="currentPassword" required />
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">Nueva Contraseña</label>
+                    <input type="password" id="newPassword" required minlength="6" />
+                </div>
+                <div class="form-group">
+                    <label for="confirmNewPassword">Confirmar Nueva Contraseña</label>
+                    <input type="password" id="confirmNewPassword" required minlength="6" />
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary"
+                        onclick="closeModal('passwordModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Cambiar Contraseña</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function changePassword() {
+            document.getElementById('passwordModal').style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function updateEmail() {
+            alert('Función de actualización de email en desarrollo');
+        }
+
+        function deleteAccount() {
+            if (confirm('¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.')) {
+                alert('Función de eliminación de cuenta en desarrollo');
+            }
+        }
+
+        // Cerrar modal al hacer clic fuera de él
+        window.onclick = function (event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+
+        // Validar formulario de cambio de contraseña
+        document.getElementById('changePasswordForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+
+            if (newPassword !== confirmNewPassword) {
+                alert('Las contraseñas no coinciden');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                alert('La nueva contraseña debe tener al menos 6 caracteres');
+                return;
+            }
+
+            // Aquí implementarías la lógica para cambiar la contraseña
+            alert('Función de cambio de contraseña en desarrollo');
+            closeModal('passwordModal');
+        });
+    </script>
+</body>
+
+</html>
