@@ -797,6 +797,10 @@
         processBtn.disabled = true;
       });
 
+      fileInput.addEventListener("click", () => {
+        fileInput.value = ""; // 👈 Se limpia antes de seleccionar
+      });
+
       // Show alert function
       function showAlert(message, type) {
         successMessage.textContent = message;
