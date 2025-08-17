@@ -6,17 +6,19 @@ import {
   getProfile,
   registerPage,
   loginPage,
-  confirmEmail
+  confirmEmail,
 } from "../controllers/auth.controller.js";
+import { guestOnly } from "../middlewares/guest-guard.js";
+import { authRequired } from "../middlewares/auth-guard.js";
 
 const router = express.Router();
 
 // Rutas de autenticación
-router.get("/login", loginPage);
-router.get("/register", registerPage);
-router.get("/auth/confirm", confirmEmail);
-router.get("/auth/check-email", (req, res) => {
-  res.render("check-email"); // vista EJS con el aviso
+router.get("/login", guestOnly, loginPage);
+router.get("/register", guestOnly, registerPage);
+router.get("/auth/confirm", guestOnly, confirmEmail);
+router.get("/auth/check-email", guestOnly, (req, res) => {
+  res.render("check-email");
 });
 
 // Procesamiento de formularios
@@ -25,6 +27,6 @@ router.post("/register", processRegister);
 router.post("/logout", logout);
 
 // Perfil del usuario (protegido)
-router.get("/profile", getProfile);
+router.get("/profile", authRequired, getProfile);
 
 export default router;
