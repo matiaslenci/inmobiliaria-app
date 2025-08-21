@@ -1,0 +1,21 @@
+<!-- consultaCuenta.ejs -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Consulta de Cuenta</title>
+  </head>
+  <body>
+    <h1>Consultar monto por número de cuenta</h1>
+    <form action="/consulta-cuenta/sauce" method="POST">
+      <label for="nroCuenta">Número de cuenta:</label>
+      <input type="text" id="nroCuenta" name="nroCuenta" required />
+      <button type="submit">Consultar</button>
+    </form>
+    <% if (monto) { %>
+    <h2>Resultado:</h2>
+    <p>Monto: <%= monto %></p>
+    <% } %> <% if (error) { %>
+    <p style="color: red"><%= error %></p>
+    <% } %>
+  </body>
+</html>
