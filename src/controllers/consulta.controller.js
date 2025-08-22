@@ -38,46 +38,65 @@ export const procesarConsulta = async (req, res) => {
 
     // Validar que existan las columnas necesarias
     const firstRow = jsonData[0] || {};
-    if (!("CUENTA AGUA" in firstRow) || !("CUENTA TASA" in firstRow)) {
+    if (
+      !("CUENTA AGUA" in firstRow) ||
+      !("CUENTA TASA" in firstRow) ||
+      !("CIUDAD" in firstRow)
+    ) {
       fs.unlinkSync(req.file.path); // eliminar archivo subido
       return res.render("index", {
         title: "Consulta Liquidaciones",
         error:
-          "No se encuentran las columnas 'CUENTA AGUA' y/o 'CUENTA TASA' en el archivo",
+          "No se encuentran las columnas 'CUENTA AGUA', 'CUENTA TASA' y/o 'CIUDAD' en el archivo",
       });
     }
 
     const cuentasAgua = [];
     const direcciones = [];
     const cuentasTasas = [];
+    const ciudades = [];
 
     jsonData.forEach((row) => {
       if (row["DIRECCION INMUEBLE"])
         direcciones.push(String(row["DIRECCION INMUEBLE"]));
       if (row["CUENTA AGUA"]) cuentasAgua.push(String(row["CUENTA AGUA"]));
       if (row["CUENTA TASA"]) cuentasTasas.push(String(row["CUENTA TASA"]));
+      if (row["CIUDAD"])
+        ciudades.push(String(row["CIUDAD"]).toUpperCase().trim());
+      else ciudades.push("");
     });
 
     const montosAgua = [];
     const montosTasas = [];
 
-    // Procesar montos de agua
+    // Procesar montos de agua y tasas según ciudad
     for (let i = 0; i < cuentasAgua.length; i++) {
-      try {
-        const montoAgua = await obtenerMontoAgua(cuentasAgua[i]);
-        montosAgua.push(montoAgua);
-      } catch {
-        montosAgua.push("Error al obtener monto agua");
+      if (ciudades[i] === "SV") {
+        montosAgua.push("");
+      } else if (ciudades[i] === "ST") {
+        try {
+          const montoAgua = await obtenerMontoAgua(cuentasAgua[i]);
+          montosAgua.push(montoAgua);
+        } catch {
+          montosAgua.push("Error al obtener monto agua");
+        }
+      } else {
+        montosAgua.push("");
       }
     }
 
-    // Procesar montos de tasas
     for (let i = 0; i < cuentasTasas.length; i++) {
-      try {
-        const montoTasas = await obtenerMontoTasas(cuentasTasas[i]);
-        montosTasas.push(montoTasas);
-      } catch {
-        montosTasas.push("Error al obtener monto tasas");
+      if (ciudades[i] === "SV") {
+        montosTasas.push("");
+      } else if (ciudades[i] === "ST") {
+        try {
+          const montoTasas = await obtenerMontoTasas(cuentasTasas[i]);
+          montosTasas.push(montoTasas);
+        } catch {
+          montosTasas.push("Error al obtener monto tasas");
+        }
+      } else {
+        montosTasas.push("");
       }
     }
 
@@ -89,6 +108,7 @@ export const procesarConsulta = async (req, res) => {
     res.render("resultado", {
       title: "Resultados Consulta",
       direcciones,
+      ciudades,
       cuentasAgua,
       cuentasTasas,
       montosAgua,
@@ -108,15 +128,7 @@ export const procesarConsulta = async (req, res) => {
 
 export const descargarPlantilla = (req, res) => {
   const columnas = [
-    [
-      "DIRECCION INMUEBLE",
-      "CUENTA TASA",
-      "CUENTA AGUA",
-      "AUMENTO",
-      "VALOR INICIAL",
-      "INICIO",
-      "FINALIZACIÓN",
-    ],
+    ["DIRECCION INMUEBLE", "CIUDAD", "CUENTA TASA", "CUENTA AGUA"],
   ];
 
   // Crear libro y hoja

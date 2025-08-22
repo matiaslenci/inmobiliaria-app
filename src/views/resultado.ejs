@@ -531,10 +531,10 @@
                 <th><i class="fas fa-dollar-sign"></i> Monto Agua</th>
                 <th><i class="fas fa-calculator"></i> Cuenta Tasa</th>
                 <th><i class="fas fa-dollar-sign"></i> Monto Tasas</th>
-                <th><i class="fas fa-chart-line"></i> Aumento</th>
+                <!--                 <th><i class="fas fa-chart-line"></i> Aumento</th>
                 <th><i class="fas fa-coins"></i> Valor Inicial</th>
                 <th><i class="fas fa-calendar-alt"></i> Inicio</th>
-                <th><i class="fas fa-calendar-check"></i> Finalización</th>
+                <th><i class="fas fa-calendar-check"></i> Finalización</th> -->
               </tr>
             </thead>
             <tbody>
@@ -545,10 +545,17 @@
                   direcciones[i] !== '-') { %>
                   <span class="account-number"><%= direcciones[i] %></span>
                   <% } else { %>
+                  <span class="empty-cell"></span>
+                  <% } %>
+                </td>
+                <td>
+                  <% if (typeof ciudades !== 'undefined' && ciudades[i] &&
+                  ciudades[i] !== '-') { %>
+                  <span class="account-number"><%= ciudades[i] %></span>
+                  <% } else { %>
                   <span class="empty-cell">-</span>
                   <% } %>
                 </td>
-                <td>-</td>
                 <td>
                   <% if (typeof cuentasAgua !== 'undefined' && cuentasAgua[i] &&
                   cuentasAgua[i] !== '-') { %>
@@ -581,10 +588,6 @@
                   <span class="empty-cell">-</span>
                   <% } %>
                 </td>
-                <td class="empty-cell">-</td>
-                <td class="empty-cell">-</td>
-                <td class="empty-cell">-</td>
-                <td class="empty-cell">-</td>
               </tr>
               <% } %>
             </tbody>
