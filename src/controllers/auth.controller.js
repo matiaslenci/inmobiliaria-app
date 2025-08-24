@@ -2,18 +2,18 @@ import { supabase } from "../utils/client.js";
 
 // Página de registro
 export const registerPage = (req, res) => {
-  res.render("register", { 
-    error: null, 
+  res.render("register", {
+    error: null,
     success: null,
-    user: res.locals.user 
+    user: res.locals.user,
   });
 };
 
 // Página de login
 export const loginPage = (req, res) => {
-  res.render("login", { 
-    error: null, 
-    user: res.locals.user 
+  res.render("login", {
+    error: null,
+    user: res.locals.user,
   });
 };
 
@@ -24,26 +24,26 @@ export const processRegister = async (req, res) => {
 
     // Validaciones básicas
     if (!email || !password) {
-      return res.render("register", { 
+      return res.render("register", {
         error: "Todos los campos son obligatorios",
         success: null,
-        user: res.locals.user
+        user: res.locals.user,
       });
     }
 
     if (password.length < 6) {
-      return res.render("register", { 
+      return res.render("register", {
         error: "La contraseña debe tener al menos 6 caracteres",
         success: null,
-        user: res.locals.user
+        user: res.locals.user,
       });
     }
 
     if (password !== confirmPassword) {
-      return res.render("register", { 
+      return res.render("register", {
         error: "Las contraseñas no coinciden",
         success: null,
-        user: res.locals.user
+        user: res.locals.user,
       });
     }
 
@@ -52,17 +52,17 @@ export const processRegister = async (req, res) => {
       email,
       password,
       options: {
-        emailRedirectTo: `${req.protocol}://${req.get('host')}/auth/confirm`
-      }
+        emailRedirectTo: `${req.protocol}://${req.get("host")}/auth/confirm`,
+      },
     });
 
     // Manejar error
     if (error) {
       console.error("Error en registro:", error);
-      return res.render("register", { 
+      return res.render("register", {
         error: error.message,
         success: null,
-        user: res.locals.user
+        user: res.locals.user,
       });
     }
 
@@ -77,22 +77,20 @@ export const processRegister = async (req, res) => {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
-        sameSite: "lax"
+        sameSite: "lax",
       });
 
       return res.redirect("/profile");
     }
-
   } catch (error) {
     console.error("Error inesperado en registro:", error);
-    return res.render("register", { 
+    return res.render("register", {
       error: "Error inesperado. Intenta nuevamente.",
       success: null,
-      user: res.locals.user
+      user: res.locals.user,
     });
   }
 };
-
 
 // Procesar login
 export const login = async (req, res) => {
@@ -101,21 +99,21 @@ export const login = async (req, res) => {
 
     // Validaciones básicas
     if (!email || !password) {
-      return res.render("login", { 
+      return res.render("login", {
         error: "Todos los campos son obligatorios",
-        user: res.locals.user
+        user: res.locals.user,
       });
     }
 
     // Intentar login con Supabase
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
-      password
+      password,
     });
 
     if (error) {
       console.error("Error en login:", error);
-      
+
       let errorMessage = "Error al iniciar sesión";
       if (error.message.includes("Invalid login credentials")) {
         errorMessage = "Email o contraseña incorrectos";
@@ -125,9 +123,9 @@ export const login = async (req, res) => {
         errorMessage = error.message;
       }
 
-      return res.render("login", { 
+      return res.render("login", {
         error: errorMessage,
-        user: res.locals.user
+        user: res.locals.user,
       });
     }
 
@@ -137,17 +135,16 @@ export const login = async (req, res) => {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
-        sameSite: "lax"
+        sameSite: "lax",
       });
 
-      return res.redirect("/profile");
+      return res.redirect("/");
     }
-
   } catch (error) {
     console.error("Error inesperado en login:", error);
-    return res.render("login", { 
+    return res.render("login", {
       error: "Error inesperado. Intenta nuevamente.",
-      user: res.locals.user
+      user: res.locals.user,
     });
   }
 };
@@ -156,11 +153,11 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
   try {
     const token = req.cookies?.sb_access_token;
-    
+
     if (token) {
       await supabase.auth.signOut();
     }
-    
+
     res.clearCookie("sb_access_token");
     res.redirect("/");
   } catch (error) {
@@ -182,7 +179,7 @@ export const getProfile = async (req, res) => {
       data: { user },
       error,
     } = await supabase.auth.getUser(token);
-    
+
     if (error || !user) {
       res.clearCookie("sb_access_token");
       return res.redirect("/login");
@@ -200,36 +197,36 @@ export const getProfile = async (req, res) => {
 export const confirmEmail = async (req, res) => {
   try {
     const { token_hash, type } = req.query;
-    
-    if (type === 'signup' && token_hash) {
+
+    if (type === "signup" && token_hash) {
       const { error } = await supabase.auth.verifyOtp({
         token_hash,
-        type: 'signup'
+        type: "signup",
       });
 
       if (error) {
-        return res.render("confirm-email", { 
+        return res.render("confirm-email", {
           error: "Error al confirmar el email. El enlace puede haber expirado.",
-          success: false
+          success: false,
         });
       }
 
-      return res.render("confirm-email", { 
+      return res.render("confirm-email", {
         error: null,
         success: true,
-        message: "¡Email confirmado exitosamente! Ya puedes iniciar sesión."
+        message: "¡Email confirmado exitosamente! Ya puedes iniciar sesión.",
       });
     }
 
-    res.render("confirm-email", { 
+    res.render("confirm-email", {
       error: "Enlace de confirmación inválido",
-      success: false
+      success: false,
     });
   } catch (error) {
     console.error("Error confirmando email:", error);
-    res.render("confirm-email", { 
+    res.render("confirm-email", {
       error: "Error inesperado al confirmar el email",
-      success: false
+      success: false,
     });
   }
 };

@@ -4,6 +4,7 @@ import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
 import consultaRoutes from "./routes/consulta.routes.js";
 import authRoutes from "./routes/auth.routes.js";
+import consultaSauceRoutes from "./routes/consulta-sauce.routes.js";
 import { supabase } from "./utils/client.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -28,7 +29,7 @@ app.use(async (req, res, next) => {
         data: { user },
         error,
       } = await supabase.auth.getUser(token);
-      
+
       if (error) {
         console.error("Error al obtener usuario:", error.message);
         // Token inválido, limpiar cookie
@@ -57,5 +58,6 @@ app.use(express.static(path.join(__dirname, "../public")));
 // Rutas
 app.use("/", consultaRoutes);
 app.use("/", authRoutes);
+app.use("/", consultaSauceRoutes);
 
 export default app;
