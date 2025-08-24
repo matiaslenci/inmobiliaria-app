@@ -5,7 +5,7 @@ import supabase from "../utils/client.js";
  * Si no lo está, redirige al login.
  * Si lo está, permite continuar a la siguiente función middleware o ruta.
  */
-export async function authRequired(req, res, next) {
+/* export async function authRequired(req, res, next) {
   try {
     const token = req.cookies.sb_access_token;
 
@@ -30,6 +30,10 @@ export async function authRequired(req, res, next) {
     console.error("Error en authRequired:", err);
     return res.redirect("/login");
   }
+}
+ */
+export async function authRequired(req, res, next) {
+  return next();
 }
 
 /* export function isAdmin(req, res, next) {
