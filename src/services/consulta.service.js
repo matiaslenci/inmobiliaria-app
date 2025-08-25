@@ -27,8 +27,8 @@ export const obtenerMontoAgua = async (nroCuenta) => {
     const html = await response.text();
     const $ = cheerio.load(html);
     const filasDatos = $("#divTablaLiquidacionesTUR table tr").slice(1); // salta la cabecera
-    const primeraFila = filasDatos.first();
-    const montoAgua = primeraFila.find("td").eq(5).text().trim();
+    const segundaFila = filasDatos.eq(1); // segunda fila de datos (índice 1)
+    const montoAgua = segundaFila.find("td").eq(5).text().trim();
 
     if (!montoAgua) {
       throw new Error(
@@ -69,9 +69,8 @@ export const obtenerMontoTasas = async (nroCuenta) => {
     const html = await response.text();
     const $ = cheerio.load(html);
     const filasDatos = $("#divTablaLiquidacionesTUR table tr").slice(1); // salta la cabecera
-    const primeraFila = filasDatos.first();
-    const montoTasas = primeraFila.find("td").eq(5).text().trim();
-
+    const segundaFila = filasDatos.eq(1); // segunda fila de datos (índice 1)
+    const montoTasas = segundaFila.find("td").eq(5).text().trim();
     if (!montoTasas) {
       throw new Error(
         `No se encontró el segundo monto para la cuenta ${nroCuenta}`
