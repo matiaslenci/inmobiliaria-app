@@ -522,26 +522,30 @@
           </h2>
         </div>
 
-        <% if (totalRecords > 0) { %>
+        <% const mostrarLocatario = Array.isArray(locatarios) &&
+        locatarios.some(l => l && l.trim() !== ""); const mostrarDireccion =
+        Array.isArray(direcciones) && direcciones.some(d => d && d.trim() !==
+        ""); %> <% if (totalRecords > 0) { %>
         <div class="table-wrapper">
           <table class="results-table">
             <thead>
               <tr>
+                <% if (mostrarDireccion) { %>
                 <th><i class="fas fa-home"></i> Dirección Inmueble</th>
+                <% } %> <% if (mostrarLocatario) { %>
+                <th><i class="fas fa-user"></i> Locatario</th>
+                <% } %>
                 <th><i class="fas fa-home"></i> Ciudad</th>
                 <th><i class="fas fa-tint"></i> Cuenta Agua</th>
                 <th><i class="fas fa-dollar-sign"></i> Monto Agua</th>
                 <th><i class="fas fa-calculator"></i> Cuenta Tasa</th>
                 <th><i class="fas fa-dollar-sign"></i> Monto Tasas</th>
-                <!--                 <th><i class="fas fa-chart-line"></i> Aumento</th>
-                <th><i class="fas fa-coins"></i> Valor Inicial</th>
-                <th><i class="fas fa-calendar-alt"></i> Inicio</th>
-                <th><i class="fas fa-calendar-check"></i> Finalización</th> -->
               </tr>
             </thead>
             <tbody>
               <% for(let i = 0; i < totalRecords; i++) { %>
               <tr>
+                <% if (mostrarDireccion) { %>
                 <td>
                   <% if (typeof direcciones !== 'undefined' && direcciones[i] &&
                   direcciones[i] !== '-') { %>
@@ -550,6 +554,16 @@
                   <span class="empty-cell"></span>
                   <% } %>
                 </td>
+                <% } %> <% if (mostrarLocatario) { %>
+                <td>
+                  <% if (typeof locatarios !== 'undefined' && locatarios[i] &&
+                  locatarios[i] !== '-') { %>
+                  <span class="account-number"><%= locatarios[i] %></span>
+                  <% } else { %>
+                  <span class="empty-cell">-</span>
+                  <% } %>
+                </td>
+                <% } %>
                 <td>
                   <% if (typeof ciudades !== 'undefined' && ciudades[i] &&
                   ciudades[i] !== '-') { %>
