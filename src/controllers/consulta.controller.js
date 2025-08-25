@@ -55,15 +55,29 @@ export const procesarConsulta = async (req, res) => {
     const direcciones = [];
     const cuentasTasas = [];
     const ciudades = [];
+    const locatarios = [];
 
     jsonData.forEach((row) => {
-      if (row["DIRECCION INMUEBLE"])
+      if (row["DIRECCION INMUEBLE"]) {
         direcciones.push(String(row["DIRECCION INMUEBLE"]));
-      if (row["CUENTA AGUA"]) cuentasAgua.push(String(row["CUENTA AGUA"]));
-      if (row["CUENTA TASA"]) cuentasTasas.push(String(row["CUENTA TASA"]));
-      if (row["CIUDAD"])
+      }
+      if (row["CUENTA AGUA"]) {
+        cuentasAgua.push(String(row["CUENTA AGUA"]));
+      }
+      if (row["CUENTA TASA"]) {
+        cuentasTasas.push(String(row["CUENTA TASA"]));
+      }
+      if (row["CIUDAD"]) {
         ciudades.push(String(row["CIUDAD"]).toUpperCase().trim());
-      else ciudades.push("");
+      } else {
+        ciudades.push("");
+      }
+      // Si existe la columna LOCATARIO, agregarla
+      if ("LOCATARIO" in row) {
+        locatarios.push(row["LOCATARIO"] ? String(row["LOCATARIO"]) : "");
+      } else {
+        locatarios.push("");
+      }
     });
 
     const montosAgua = [];
@@ -113,6 +127,7 @@ export const procesarConsulta = async (req, res) => {
       cuentasTasas,
       montosAgua,
       montosTasas,
+      locatarios,
       totalRecords: Math.max(cuentasAgua.length, cuentasTasas.length),
       waterAccounts: cuentasAgua.filter((c) => c && c !== "-").length,
       taxAccounts: cuentasTasas.filter((c) => c && c !== "-").length,
