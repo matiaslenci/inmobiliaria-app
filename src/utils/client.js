@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
 
-dotenv.config({ path: `./env/.env.dev` }); // para leer tu .env
+dotenv.config({ path: `./env/.env` }); // para leer tu .env
 
 // ⚠️ Estas variables deben estar en tu .env
 const supabaseUrl = process.env.SUPABASE_URL;
