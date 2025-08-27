@@ -80,40 +80,27 @@ export const procesarConsulta = async (req, res) => {
       }
     });
 
-    const montosAgua = [];
-    const montosTasas = [];
-
-    // Procesar montos de agua y tasas según ciudad
-    for (let i = 0; i < cuentasAgua.length; i++) {
-      if (ciudades[i] === "SV") {
-        montosAgua.push("");
-      } else if (ciudades[i] === "ST") {
-        try {
-          const montoAgua = await obtenerMontoAgua(cuentasAgua[i]);
-          montosAgua.push(montoAgua);
-        } catch {
-          montosAgua.push("Error al obtener monto agua");
+    const montosAgua = await Promise.all(
+      cuentasAgua.map((cuenta, i) => {
+        if (ciudades[i] === "ST") {
+          return obtenerMontoAgua(cuenta).catch(
+            () => "Error al obtener monto agua"
+          );
         }
-      } else {
-        montosAgua.push("");
-      }
-    }
+        return "";
+      })
+    );
 
-    for (let i = 0; i < cuentasTasas.length; i++) {
-      if (ciudades[i] === "SV") {
-        montosTasas.push("");
-      } else if (ciudades[i] === "ST") {
-        try {
-          const montoTasas = await obtenerMontoTasas(cuentasTasas[i]);
-          montosTasas.push(montoTasas);
-        } catch {
-          montosTasas.push("Error al obtener monto tasas");
+    const montosTasas = await Promise.all(
+      cuentasTasas.map((cuenta, i) => {
+        if (ciudades[i] === "ST") {
+          return obtenerMontoTasas(cuenta).catch(
+            () => "Error al obtener monto tasas"
+          );
         }
-      } else {
-        montosTasas.push("");
-      }
-    }
-
+        return "";
+      })
+    );
     // Eliminar archivo después de procesarlo
     fs.unlink(filePath, (err) => {
       if (err) console.error("Error eliminando el archivo:", err);
