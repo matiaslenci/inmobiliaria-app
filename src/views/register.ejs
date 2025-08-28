@@ -322,7 +322,6 @@
       .checkbox-label a:hover {
         text-decoration: underline;
       }
-
       /* Buttons */
       .btn {
         display: inline-flex;
@@ -404,6 +403,24 @@
         color: var(--primary);
         text-decoration: none;
         font-weight: 500;
+      }
+
+      /* Mantener checkbox grande y visible */
+      .legal-container {
+        display: flex; /* para alinear checkbox y checkmark */
+        flex-direction: row; /* fila horizontal */
+        align-items: flex-start; /* alinea checkbox con texto */
+        gap: 0.5rem;
+      }
+
+      .legal-container .legal {
+        display: inline; /* texto corrido con enlaces */
+      }
+
+      .legal-container input[type="checkbox"] {
+        width: 20px; /* tamaño personalizado */
+        height: 20px;
+        margin-top: 0.2rem; /* opcional: ajusta alineación vertical */
       }
 
       .link-primary:hover {
@@ -591,12 +608,14 @@
         <% } %>
 
         <div class="form-group">
-          <label class="checkbox-label">
+          <label class="checkbox-label legal-container">
             <input type="checkbox" id="terms" required />
             <span class="checkmark"></span>
-            Acepto los
-            <a href="/terms" target="_blank">términos y condiciones</a> y la
-            <a href="/privacy" target="_blank">política de privacidad</a>
+            <span class="legal">
+              Acepto los
+              <a href="/terms" target="_blank">términos y condiciones</a> y la
+              <a href="/privacy" target="_blank">política de privacidad</a>
+            </span>
           </label>
         </div>
 
