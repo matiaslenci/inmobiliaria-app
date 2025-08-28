@@ -630,10 +630,10 @@
           Imprimir Resultados
         </button>
 
-        <a href="/export" class="btn btn-success">
+        <button id="exportar-excel" class="btn btn-success" type="button">
           <i class="fas fa-download"></i>
           Exportar Excel
-        </a>
+        </button>
       </div>
     </main>
 
@@ -693,30 +693,117 @@
         });
       });
 
-      // Export functionality (placeholder)
+      // Exportar resultados a Excel
       function exportResults() {
-        // This would typically trigger a server-side export
-        console.log("Exporting results...");
-
-        // Show loading state
-        const exportBtn = document.querySelector('[href="/export"]');
+        const exportBtn = document.getElementById("exportar-excel");
+        if (!exportBtn) return;
         const originalText = exportBtn.innerHTML;
         exportBtn.innerHTML = '<div class="loading"></div> Exportando...';
+        exportBtn.disabled = true;
 
-        // Simulate export delay
-        setTimeout(() => {
-          exportBtn.innerHTML = originalText;
-        }, 2000);
+        // Obtener los datos de la tabla
+        const filas = [];
+        const table = document.querySelector(".results-table");
+        if (!table) return;
+        const headers = Array.from(table.querySelectorAll("thead th")).map(
+          (th) => th.textContent.trim()
+        );
+        filas.push(headers);
+        const rows = table.querySelectorAll("tbody tr");
+        rows.forEach((row) => {
+          const cells = Array.from(row.querySelectorAll("td")).map((td) =>
+            td.textContent.trim()
+          );
+          filas.push(cells);
+        });
+
+        // Mapear los datos a los campos esperados por el backend
+        // Detectar índices de cada columna
+        const idx = {
+          direccion: headers.findIndex((h) =>
+            h.toLowerCase().includes("dirección")
+          ),
+          locatario: headers.findIndex((h) =>
+            h.toLowerCase().includes("locatario")
+          ),
+          ciudad: headers.findIndex((h) => h.toLowerCase().includes("ciudad")),
+          cuentaAgua: headers.findIndex((h) =>
+            h.toLowerCase().includes("agua")
+          ),
+          montoAgua: headers.findIndex((h) =>
+            h.toLowerCase().includes("monto agua")
+          ),
+          cuentaTasa: headers.findIndex((h) =>
+            h.toLowerCase().includes("tasa")
+          ),
+          montoTasas: headers.findIndex((h) =>
+            h.toLowerCase().includes("monto tasas")
+          ),
+        };
+        const direcciones = [],
+          ciudades = [],
+          cuentasAgua = [],
+          cuentasTasas = [],
+          montosAgua = [],
+          montosTasas = [],
+          locatarios = [];
+        for (let i = 1; i < filas.length; i++) {
+          const f = filas[i];
+          if (idx.direccion !== -1) direcciones.push(f[idx.direccion] || "");
+          if (idx.locatario !== -1) locatarios.push(f[idx.locatario] || "");
+          if (idx.ciudad !== -1) ciudades.push(f[idx.ciudad] || "");
+          if (idx.cuentaAgua !== -1) cuentasAgua.push(f[idx.cuentaAgua] || "");
+          if (idx.montoAgua !== -1) montosAgua.push(f[idx.montoAgua] || "");
+          if (idx.cuentaTasa !== -1) cuentasTasas.push(f[idx.cuentaTasa] || "");
+          if (idx.montoTasas !== -1) montosTasas.push(f[idx.montoTasas] || "");
+        }
+
+        // Enviar los datos al backend para generar el Excel
+        fetch("/exportar-resultados", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            direcciones,
+            ciudades,
+            cuentasAgua,
+            cuentasTasas,
+            montosAgua,
+            montosTasas,
+            locatarios,
+          }),
+        })
+          .then((response) => {
+            if (!response.ok) throw new Error("Error al exportar");
+            return response.blob();
+          })
+          .then((blob) => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "resultados_tasas.xlsx";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+          })
+          .catch(() => {
+            alert("Ocurrió un error al exportar los resultados.");
+          })
+          .finally(() => {
+            exportBtn.innerHTML = originalText;
+            exportBtn.disabled = false;
+          });
       }
 
-      // Attach export handler if needed
+      // Attach export handler
       document.addEventListener("DOMContentLoaded", function () {
-        const exportBtn = document.querySelector('[href="/export"]');
+        const exportBtn = document.getElementById("exportar-excel");
         if (exportBtn) {
           exportBtn.addEventListener("click", function (e) {
-            // If you want to handle export client-side, uncomment below:
-            // e.preventDefault();
-            // exportResults();
+            e.preventDefault();
+            exportResults();
           });
         }
       });

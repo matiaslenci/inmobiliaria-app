@@ -2,12 +2,17 @@ import * as cheerio from "cheerio";
 
 export const obtenerMontoAgua = async (nroCuenta) => {
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 2000); // 10 segundos timeout
+
     const response = await fetch(
       "https://servicios.santotome.gob.ar:8443/liquidacionesweb/buscarLiquidaciones.do",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
         },
         body: new URLSearchParams({
           parametricos: "9",
@@ -17,11 +22,14 @@ export const obtenerMontoAgua = async (nroCuenta) => {
           codObra: "",
           nroContrato: "",
         }),
+        signal: controller.signal,
       }
     );
 
+    clearTimeout(timeoutId);
+
     if (!response.ok) {
-      throw new Error(`Error en la solicitud: ${response.status}`);
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
     const html = await response.text();
@@ -38,18 +46,26 @@ export const obtenerMontoAgua = async (nroCuenta) => {
 
     return montoAgua;
   } catch (error) {
-    throw new Error(`Error al obtener el monto: ${error.message}`);
+    if (error.name === "AbortError") {
+      throw new Error(`Timeout en consulta de agua para cuenta ${nroCuenta}`);
+    }
+    throw new Error(`Error al obtener monto agua: ${error.message}`);
   }
 };
 
 export const obtenerMontoTasas = async (nroCuenta) => {
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 segundos timeout
+
     const response = await fetch(
       "https://servicios.santotome.gob.ar:8443/liquidacionesweb/buscarLiquidaciones.do",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
         },
         body: new URLSearchParams({
           parametricos: "5",
@@ -59,11 +75,14 @@ export const obtenerMontoTasas = async (nroCuenta) => {
           codObra: "",
           nroContrato: "",
         }),
+        signal: controller.signal,
       }
     );
 
+    clearTimeout(timeoutId);
+
     if (!response.ok) {
-      throw new Error(`Error en la solicitud: ${response.status}`);
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
     const html = await response.text();
@@ -79,6 +98,9 @@ export const obtenerMontoTasas = async (nroCuenta) => {
 
     return montoTasas;
   } catch (error) {
-    throw new Error(`Error al obtener el monto: ${error.message}`);
+    if (error.name === "AbortError") {
+      throw new Error(`Timeout en consulta de tasas para cuenta ${nroCuenta}`);
+    }
+    throw new Error(`Error al obtener monto tasas: ${error.message}`);
   }
 };
