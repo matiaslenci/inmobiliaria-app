@@ -80,32 +80,129 @@ export const procesarConsulta = async (req, res) => {
       }
     });
 
-    const montosAgua = await Promise.all(
-      cuentasAgua.map((cuenta, i) => {
-        if (ciudades[i] === "ST") {
-          return obtenerMontoAgua(cuenta).catch(
-            () => "Error al obtener monto agua"
-          );
+    // Función para procesar en lotes con control de concurrencia optimizado
+    const procesarEnLotes = async (
+      cuentas,
+      ciudadesArray,
+      funcionConsulta,
+      batchSize = 5,
+      baseDelay = 500
+    ) => {
+      const resultados = new Array(cuentas.length).fill("");
+      let procesados = 0;
+      let errores = 0;
+      let consecutiveErrors = 0;
+
+      for (let i = 0; i < cuentas.length; i += batchSize) {
+        const lote = [];
+        const indices = [];
+
+        // Preparar lote de máximo batchSize elementos
+        for (let j = i; j < Math.min(i + batchSize, cuentas.length); j++) {
+          if (ciudadesArray[j] === "ST" && cuentas[j]) {
+            lote.push(
+              funcionConsulta(cuentas[j])
+                .then((resultado) => ({ exito: true, resultado }))
+                .catch((error) => ({ exito: false, error: error.message }))
+            );
+            indices.push(j);
+          }
         }
-        return "";
-      })
+
+        if (lote.length > 0) {
+          console.log(
+            `Procesando lote ${Math.floor(i / batchSize) + 1}/${Math.ceil(
+              cuentas.length / batchSize
+            )} - ${lote.length} consultas`
+          );
+
+          try {
+            const resultadosLote = await Promise.all(lote);
+            let erroresEnLote = 0;
+
+            resultadosLote.forEach((resultado, idx) => {
+              if (resultado.exito) {
+                resultados[indices[idx]] = resultado.resultado;
+                procesados++;
+              } else {
+                resultados[indices[idx]] = "Error al obtener monto";
+                errores++;
+                erroresEnLote++;
+                console.error(
+                  `Error en cuenta ${cuentas[indices[idx]]}: ${resultado.error}`
+                );
+              }
+            });
+
+            // Ajuste dinámico del delay basado en errores
+            if (erroresEnLote > lote.length * 0.5) {
+              consecutiveErrors++;
+            } else {
+              consecutiveErrors = 0;
+            }
+
+            // Delay entre lotes con backoff adaptativo
+            if (i + batchSize < cuentas.length) {
+              const adaptiveDelay = baseDelay + consecutiveErrors * 300;
+              console.log(
+                `Esperando ${adaptiveDelay}ms antes del siguiente lote...`
+              );
+              await new Promise((resolve) =>
+                setTimeout(resolve, adaptiveDelay)
+              );
+            }
+          } catch (error) {
+            console.error(
+              `Error crítico procesando lote ${i}-${i + batchSize}:`,
+              error
+            );
+            consecutiveErrors++;
+            // Llenar con errores los índices del lote fallido
+            indices.forEach((idx) => {
+              resultados[idx] = "Error al obtener monto";
+              errores++;
+            });
+          }
+        }
+      }
+
+      console.log(
+        `Procesamiento completado: ${procesados} exitosos, ${errores} errores`
+      );
+      return resultados;
+    };
+
+    // Procesar agua primero con configuración optimizada
+    console.log("Iniciando procesamiento de consultas de agua...");
+    const montosAgua = await procesarEnLotes(
+      cuentasAgua,
+      ciudades,
+      obtenerMontoAgua,
+      5,
+      500
     );
 
-    const montosTasas = await Promise.all(
-      cuentasTasas.map((cuenta, i) => {
-        if (ciudades[i] === "ST") {
-          return obtenerMontoTasas(cuenta).catch(
-            () => "Error al obtener monto tasas"
-          );
-        }
-        return "";
-      })
+    // Delay reducido entre tipos de consulta
+    console.log("Esperando antes de procesar tasas...");
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Procesar tasas después con configuración optimizada
+    console.log("Iniciando procesamiento de consultas de tasas...");
+    const montosTasas = await procesarEnLotes(
+      cuentasTasas,
+      ciudades,
+      obtenerMontoTasas,
+      5,
+      500
     );
 
     // Eliminar archivo después de procesarlo
-    fs.unlink(filePath, (err) => {
-      if (err) console.error("Error eliminando el archivo:", err);
-    });
+    try {
+      fs.unlinkSync(filePath);
+      console.log("Archivo eliminado exitosamente");
+    } catch (err) {
+      console.error("Error eliminando el archivo:", err);
+    }
 
     res.render("resultado", {
       title: "Resultados Consulta",
@@ -122,6 +219,17 @@ export const procesarConsulta = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    
+    // Eliminar archivo también en caso de error
+    try {
+      if (req.file?.path) {
+        fs.unlinkSync(req.file.path);
+        console.log("Archivo eliminado después del error");
+      }
+    } catch (unlinkError) {
+      console.error("Error eliminando archivo después del error:", unlinkError);
+    }
+    
     res.render("index", {
       title: "Consulta Liquidaciones",
       error: "Error procesando el archivo",
