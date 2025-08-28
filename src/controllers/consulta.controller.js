@@ -219,7 +219,7 @@ export const procesarConsulta = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    
+
     // Eliminar archivo también en caso de error
     try {
       if (req.file?.path) {
@@ -229,7 +229,7 @@ export const procesarConsulta = async (req, res) => {
     } catch (unlinkError) {
       console.error("Error eliminando archivo después del error:", unlinkError);
     }
-    
+
     res.render("index", {
       title: "Consulta Liquidaciones",
       error: "Error procesando el archivo",
