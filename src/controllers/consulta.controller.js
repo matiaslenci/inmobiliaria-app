@@ -154,3 +154,77 @@ export const descargarPlantilla = (req, res) => {
   );
   res.send(buffer);
 };
+
+// Nueva función para exportar los resultados procesados a Excel
+export const descargarResultados = (req, res) => {
+  // Los datos deben ser enviados por el cliente (POST) o almacenados en sesión
+  // Aquí se asume que los datos llegan por POST (body)
+  const {
+    direcciones = [],
+    ciudades = [],
+    cuentasAgua = [],
+    cuentasTasas = [],
+    montosAgua = [],
+    montosTasas = [],
+    locatarios = [],
+  } = req.body;
+
+  // Determinar si hay columna locatario y dirección
+  const mostrarLocatario =
+    Array.isArray(locatarios) && locatarios.some((l) => l && l.trim() !== "");
+  const mostrarDireccion =
+    Array.isArray(direcciones) && direcciones.some((d) => d && d.trim() !== "");
+
+  // Encabezados dinámicos
+  const columnas = [];
+  if (mostrarDireccion) columnas.push("DIRECCION INMUEBLE");
+  if (mostrarLocatario) columnas.push("LOCATARIO");
+  columnas.push(
+    "CIUDAD",
+    "CUENTA AGUA",
+    "MONTO AGUA",
+    "CUENTA TASA",
+    "MONTO TASAS"
+  );
+
+  // Construir filas
+  const filas = [columnas];
+  const total = Math.max(
+    direcciones.length,
+    ciudades.length,
+    cuentasAgua.length,
+    cuentasTasas.length,
+    montosAgua.length,
+    montosTasas.length,
+    locatarios.length
+  );
+  for (let i = 0; i < total; i++) {
+    const fila = [];
+    if (mostrarDireccion) fila.push(direcciones[i] || "");
+    if (mostrarLocatario) fila.push(locatarios[i] || "");
+    fila.push(
+      ciudades[i] || "",
+      cuentasAgua[i] || "",
+      montosAgua[i] || "",
+      cuentasTasas[i] || "",
+      montosTasas[i] || ""
+    );
+    filas.push(fila);
+  }
+
+  // Crear libro y hoja
+  const workbook = xlsx.utils.book_new();
+  const worksheet = xlsx.utils.aoa_to_sheet(filas);
+  xlsx.utils.book_append_sheet(workbook, worksheet, "Resultados");
+  const buffer = xlsx.write(workbook, { type: "buffer", bookType: "xlsx" });
+
+  res.setHeader(
+    "Content-Disposition",
+    "attachment; filename=resultados_tasas.xlsx"
+  );
+  res.setHeader(
+    "Content-Type",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  );
+  res.send(buffer);
+};
