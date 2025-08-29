@@ -1,6 +1,6 @@
 import * as cheerio from "cheerio";
 
-export const obtenerMontoAgua = async (nroCuenta) => {
+export const obtenerMontoAgua = async (nroCuenta, filaIndice = 1) => {
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 2000); // 10 segundos timeout
@@ -35,12 +35,14 @@ export const obtenerMontoAgua = async (nroCuenta) => {
     const html = await response.text();
     const $ = cheerio.load(html);
     const filasDatos = $("#divTablaLiquidacionesTUR table tr").slice(1); // salta la cabecera
-    const segundaFila = filasDatos.eq(1); // segunda fila de datos (índice 1)
-    const montoAgua = segundaFila.find("td").eq(5).text().trim();
+    const filaSeleccionada = filasDatos.eq(filaIndice); // usa el índice de fila especificado
+    const montoAgua = filaSeleccionada.find("td").eq(5).text().trim();
 
     if (!montoAgua) {
       throw new Error(
-        `No se encontró el segundo monto para la cuenta ${nroCuenta}`
+        `No se encontró el monto en la fila ${
+          filaIndice + 1
+        } para la cuenta ${nroCuenta}`
       );
     }
 
@@ -53,7 +55,7 @@ export const obtenerMontoAgua = async (nroCuenta) => {
   }
 };
 
-export const obtenerMontoTasas = async (nroCuenta) => {
+export const obtenerMontoTasas = async (nroCuenta, filaIndice = 1) => {
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 segundos timeout
@@ -88,11 +90,13 @@ export const obtenerMontoTasas = async (nroCuenta) => {
     const html = await response.text();
     const $ = cheerio.load(html);
     const filasDatos = $("#divTablaLiquidacionesTUR table tr").slice(1); // salta la cabecera
-    const segundaFila = filasDatos.eq(1); // segunda fila de datos (índice 1)
-    const montoTasas = segundaFila.find("td").eq(5).text().trim();
+    const filaSeleccionada = filasDatos.eq(filaIndice); // usa el índice de fila especificado
+    const montoTasas = filaSeleccionada.find("td").eq(5).text().trim();
     if (!montoTasas) {
       throw new Error(
-        `No se encontró el segundo monto para la cuenta ${nroCuenta}`
+        `No se encontró el monto en la fila ${
+          filaIndice + 1
+        } para la cuenta ${nroCuenta}`
       );
     }
 

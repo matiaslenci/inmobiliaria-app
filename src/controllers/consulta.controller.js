@@ -28,6 +28,14 @@ export const procesarConsulta = async (req, res) => {
   try {
     const filePath = req.file.path;
 
+    // Obtener el período seleccionado (este-mes = índice 0, mes-siguiente = índice 1)
+    const periodo = req.body.periodo || "mes-siguiente";
+    const filaIndice = periodo === "este-mes" ? 0 : 1;
+
+    console.log(
+      `Período seleccionado: ${periodo}, buscando en fila: ${filaIndice + 1}`
+    );
+
     // Leer el Excel
     const workbook = xlsx.readFile(filePath);
     const sheetName = workbook.SheetNames[0];
@@ -85,6 +93,7 @@ export const procesarConsulta = async (req, res) => {
       cuentas,
       ciudadesArray,
       funcionConsulta,
+      filaIndice,
       batchSize = 5,
       baseDelay = 500
     ) => {
@@ -101,7 +110,7 @@ export const procesarConsulta = async (req, res) => {
         for (let j = i; j < Math.min(i + batchSize, cuentas.length); j++) {
           if (ciudadesArray[j] === "ST" && cuentas[j]) {
             lote.push(
-              funcionConsulta(cuentas[j])
+              funcionConsulta(cuentas[j], filaIndice)
                 .then((resultado) => ({ exito: true, resultado }))
                 .catch((error) => ({ exito: false, error: error.message }))
             );
@@ -178,6 +187,7 @@ export const procesarConsulta = async (req, res) => {
       cuentasAgua,
       ciudades,
       obtenerMontoAgua,
+      filaIndice,
       5,
       500
     );
@@ -192,6 +202,7 @@ export const procesarConsulta = async (req, res) => {
       cuentasTasas,
       ciudades,
       obtenerMontoTasas,
+      filaIndice,
       5,
       500
     );
