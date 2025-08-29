@@ -216,6 +216,100 @@
         margin-bottom: 2rem;
       }
 
+      /* Period Selection */
+      .period-selection {
+        margin-bottom: 2rem;
+      }
+
+      .period-selection h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+        text-align: center;
+      }
+
+      .radio-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+
+      .radio-option {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: var(--transition);
+        background: var(--surface);
+      }
+
+      .radio-option:hover {
+        border-color: var(--primary);
+        background: rgba(66, 133, 244, 0.02);
+      }
+
+      .radio-option input[type="radio"] {
+        display: none;
+      }
+
+      .radio-custom {
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--border);
+        border-radius: 50%;
+        position: relative;
+        transition: var(--transition);
+        flex-shrink: 0;
+      }
+
+      .radio-option input[type="radio"]:checked + .radio-custom {
+        border-color: var(--primary);
+        background: var(--primary);
+      }
+
+      .radio-option input[type="radio"]:checked + .radio-custom::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 8px;
+        height: 8px;
+        background: white;
+        border-radius: 50%;
+      }
+
+      .radio-option input[type="radio"]:checked ~ .radio-content .radio-title {
+        color: var(--primary);
+        font-weight: 600;
+      }
+
+      .radio-content {
+        flex: 1;
+      }
+
+      .radio-title {
+        font-weight: 500;
+        color: var(--text-primary);
+        margin-bottom: 0.25rem;
+        transition: var(--transition);
+      }
+
+      .radio-subtitle {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+      }
+
+      @media (max-width: 640px) {
+        .radio-group {
+          grid-template-columns: 1fr;
+        }
+      }
+
       /* File Upload Area */
       .file-upload {
         border: 2px dashed var(--border);
@@ -635,6 +729,35 @@
             enctype="multipart/form-data"
             id="uploadForm"
           >
+            <!-- Period Selection -->
+            <div class="period-selection">
+              <h3>Seleccionar Período</h3>
+              <div class="radio-group">
+                <label class="radio-option">
+                  <input type="radio" name="periodo" value="este-mes" checked />
+                  <span class="radio-custom"></span>
+                  <div class="radio-content">
+                    <div class="radio-title" id="esteMessTitulo">Este Mes</div>
+                    <div class="radio-subtitle" id="esteMessSubtitulo">
+                      Obtener montos del mes actual
+                    </div>
+                  </div>
+                </label>
+
+                <label class="radio-option">
+                  <input type="radio" name="periodo" value="mes-siguiente" />
+                  <span class="radio-custom"></span>
+                  <div class="radio-content">
+                    <div class="radio-title" id="mesSiguienteTitulo">
+                      Mes Siguiente
+                    </div>
+                    <div class="radio-subtitle" id="mesSiguienteSubtitulo">
+                      Obtener montos del próximo mes
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </div>
             <!-- File Upload Area -->
             <div class="file-upload" id="fileUpload">
               <input
@@ -723,7 +846,7 @@
       const uploadForm = document.getElementById("uploadForm");
       const successAlert = document.getElementById("successAlert");
       const successMessage = document.getElementById("successMessage");
-      const btnText = document.getElementById("btnText");
+      const btnTextElement = document.getElementById("btnText");
       const btnLoading = document.getElementById("btnLoading");
 
       // Drag and drop functionality
@@ -792,7 +915,7 @@
 
       // Form submission
       uploadForm.addEventListener("submit", (e) => {
-        btnText.textContent = "Procesando...";
+        btnTextElement.textContent = "Procesando...";
         btnLoading.style.display = "inline-block";
         processBtn.disabled = true;
       });
@@ -848,6 +971,90 @@
       // Observe elements
       document.querySelectorAll(".feature-card, .upload-card").forEach((el) => {
         observer.observe(el);
+      });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log("Script iniciado");
+
+        const meses = [
+          "enero",
+          "febrero",
+          "marzo",
+          "abril",
+          "mayo",
+          "junio",
+          "julio",
+          "agosto",
+          "septiembre",
+          "octubre",
+          "noviembre",
+          "diciembre",
+        ];
+
+        const hoy = new Date();
+        const mesActual = meses[hoy.getMonth()];
+        const mesSiguiente = meses[(hoy.getMonth() + 1) % 12];
+
+        console.log("Mes actual:", mesActual);
+        console.log("Mes siguiente:", mesSiguiente);
+
+        const radios = document.querySelectorAll('input[name="periodo"]');
+        const btnTextElement = document.getElementById("btnText");
+
+        // Títulos y subtítulos (usando los IDs tal cual los tenés en tu HTML)
+        const esteMesTitulo = document.getElementById("esteMessTitulo");
+        const esteMesSubtitulo = document.getElementById("esteMessSubtitulo");
+        const mesSigTitulo = document.getElementById("mesSiguienteTitulo");
+        const mesSigSubtitulo = document.getElementById(
+          "mesSiguienteSubtitulo"
+        );
+
+        console.log("Elementos encontrados:");
+        console.log("esteMesTitulo:", esteMesTitulo);
+        console.log("esteMesSubtitulo:", esteMesSubtitulo);
+        console.log("mesSigTitulo:", mesSigTitulo);
+        console.log("mesSigSubtitulo:", mesSigSubtitulo);
+
+        // Verificar que todos los elementos existan antes de modificarlos
+        if (
+          esteMesTitulo &&
+          esteMesSubtitulo &&
+          mesSigTitulo &&
+          mesSigSubtitulo
+        ) {
+          console.log("Actualizando textos...");
+          // Setear textos iniciales
+          esteMesTitulo.textContent = `Mes de ${mesActual}`;
+          esteMesSubtitulo.textContent = `Obtener montos de ${mesActual}`;
+          mesSigTitulo.textContent = `Mes de ${mesSiguiente}`;
+          mesSigSubtitulo.textContent = `Obtener montos de ${mesSiguiente}`;
+          console.log("Textos actualizados");
+        } else {
+          console.error("No se encontraron todos los elementos necesarios");
+        }
+
+        // Actualizar botón según radio seleccionado
+        function updateBtnText() {
+          const seleccionado = document.querySelector(
+            'input[name="periodo"]:checked'
+          );
+          if (seleccionado && btnTextElement) {
+            if (seleccionado.value === "este-mes") {
+              btnTextElement.textContent = `Calcular Tasas de ${mesActual}`;
+            } else {
+              btnTextElement.textContent = `Calcular Tasas de ${mesSiguiente}`;
+            }
+            console.log("Botón actualizado:", btnTextElement.textContent);
+          }
+        }
+
+        // Solo ejecutar si hay elementos válidos
+        if (btnTextElement && radios.length > 0) {
+          updateBtnText(); // inicializa al cargar
+          radios.forEach((radio) =>
+            radio.addEventListener("change", updateBtnText)
+          );
+        }
       });
     </script>
   </body>
