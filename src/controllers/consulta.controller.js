@@ -28,6 +28,32 @@ export const procesarConsulta = async (req, res) => {
   try {
     const filePath = req.file.path;
 
+    // Obtener el período seleccionado (este-mes = índice 0, mes-siguiente = índice 1)
+    const periodo = req.body.periodo || "mes-siguiente";
+    const filaIndice = periodo === "este-mes" ? 0 : 1;
+
+    // Calcular el mes correspondiente para mostrar en resultados
+    const meses = [
+      "enero",
+      "febrero",
+      "marzo",
+      "abril",
+      "mayo",
+      "junio",
+      "julio",
+      "agosto",
+      "septiembre",
+      "octubre",
+      "noviembre",
+      "diciembre",
+    ];
+
+    const hoy = new Date();
+    const mesActual = meses[hoy.getMonth()];
+    const mesSiguiente = meses[(hoy.getMonth() + 1) % 12];
+    const mesSeleccionado = periodo === "este-mes" ? mesActual : mesSiguiente;
+    const periodoTexto = periodo === "este-mes" ? "Este Mes" : "Mes Siguiente";
+
     // Leer el Excel
     const workbook = xlsx.readFile(filePath);
     const sheetName = workbook.SheetNames[0];
@@ -85,6 +111,7 @@ export const procesarConsulta = async (req, res) => {
       cuentas,
       ciudadesArray,
       funcionConsulta,
+      filaIndice,
       batchSize = 5,
       baseDelay = 500
     ) => {
@@ -101,7 +128,7 @@ export const procesarConsulta = async (req, res) => {
         for (let j = i; j < Math.min(i + batchSize, cuentas.length); j++) {
           if (ciudadesArray[j] === "ST" && cuentas[j]) {
             lote.push(
-              funcionConsulta(cuentas[j])
+              funcionConsulta(cuentas[j], filaIndice)
                 .then((resultado) => ({ exito: true, resultado }))
                 .catch((error) => ({ exito: false, error: error.message }))
             );
@@ -110,12 +137,6 @@ export const procesarConsulta = async (req, res) => {
         }
 
         if (lote.length > 0) {
-          console.log(
-            `Procesando lote ${Math.floor(i / batchSize) + 1}/${Math.ceil(
-              cuentas.length / batchSize
-            )} - ${lote.length} consultas`
-          );
-
           try {
             const resultadosLote = await Promise.all(lote);
             let erroresEnLote = 0;
@@ -144,9 +165,6 @@ export const procesarConsulta = async (req, res) => {
             // Delay entre lotes con backoff adaptativo
             if (i + batchSize < cuentas.length) {
               const adaptiveDelay = baseDelay + consecutiveErrors * 300;
-              console.log(
-                `Esperando ${adaptiveDelay}ms antes del siguiente lote...`
-              );
               await new Promise((resolve) =>
                 setTimeout(resolve, adaptiveDelay)
               );
@@ -166,32 +184,28 @@ export const procesarConsulta = async (req, res) => {
         }
       }
 
-      console.log(
-        `Procesamiento completado: ${procesados} exitosos, ${errores} errores`
-      );
       return resultados;
     };
 
     // Procesar agua primero con configuración optimizada
-    console.log("Iniciando procesamiento de consultas de agua...");
     const montosAgua = await procesarEnLotes(
       cuentasAgua,
       ciudades,
       obtenerMontoAgua,
+      filaIndice,
       5,
       500
     );
 
     // Delay reducido entre tipos de consulta
-    console.log("Esperando antes de procesar tasas...");
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Procesar tasas después con configuración optimizada
-    console.log("Iniciando procesamiento de consultas de tasas...");
     const montosTasas = await procesarEnLotes(
       cuentasTasas,
       ciudades,
       obtenerMontoTasas,
+      filaIndice,
       5,
       500
     );
@@ -199,7 +213,6 @@ export const procesarConsulta = async (req, res) => {
     // Eliminar archivo después de procesarlo
     try {
       fs.unlinkSync(filePath);
-      console.log("Archivo eliminado exitosamente");
     } catch (err) {
       console.error("Error eliminando el archivo:", err);
     }
@@ -216,6 +229,9 @@ export const procesarConsulta = async (req, res) => {
       totalRecords: Math.max(cuentasAgua.length, cuentasTasas.length),
       waterAccounts: cuentasAgua.filter((c) => c && c !== "-").length,
       taxAccounts: cuentasTasas.filter((c) => c && c !== "-").length,
+      periodo,
+      mesSeleccionado,
+      periodoTexto,
     });
   } catch (error) {
     console.error(error);
@@ -224,7 +240,6 @@ export const procesarConsulta = async (req, res) => {
     try {
       if (req.file?.path) {
         fs.unlinkSync(req.file.path);
-        console.log("Archivo eliminado después del error");
       }
     } catch (unlinkError) {
       console.error("Error eliminando archivo después del error:", unlinkError);

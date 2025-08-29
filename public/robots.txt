@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+
+# Permitir acceso a archivos principales
+Allow: /css/
+Allow: /assets/
+Allow: /plantilla
+
+# Restringir acceso a áreas privadas
+Disallow: /uploads/
+Disallow: /login
+Disallow: /register
+Disallow: /profile
+
+# Sitemap (cuando esté disponible)
+Sitemap: https://tasas-inmobiliarias.com/sitemap.xml
+
+# Crawl-delay para ser respetuosos con los bots
+Crawl-delay: 1

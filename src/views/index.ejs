@@ -4,16 +4,111 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
-      Calculadora de Tasas Inmobiliarias - Procesa Excel Profesionalmente
+      Calculadora de Tasas Inmobiliarias Santo Tomé, Santa Fe y Sauce Viejo |
+      Tasas Municipales
     </title>
     <meta
       name="description"
-      content="Herramienta profesional para calcular tasas inmobiliarias desde archivos Excel. Procesamiento rápido, cálculos precisos y descarga de plantillas."
+      content="Calculadora de tasas urbanas inmobiliarias y municipales para Santo Tomé, Santa Fe y Sauce Viejo. Procesa archivos Excel automáticamente. Cálculo preciso de impuestos inmobiliarios municipales."
     />
     <meta
       name="keywords"
-      content="tasas inmobiliarias, excel, calculadora, bienes raíces, procesamiento automático"
+      content="tasas urbanas inmobiliarias santo tome, tasas municipales santa fe, sauce viejo tasas, calculadora impuestos inmobiliarios, tasas municipales argentina, santo tome santa fe, excel tasas municipales, calculadora inmobiliaria municipal"
     />
+
+    <!-- SEO Meta Tags -->
+    <meta name="author" content="Matias Lenci" />
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="Spanish" />
+    <meta name="revisit-after" content="7 days" />
+    <meta name="distribution" content="web" />
+    <meta name="rating" content="general" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://tasas-inmobiliarias.com/" />
+    <meta
+      property="og:title"
+      content="Calculadora de Tasas Inmobiliarias Santo Tomé, Santa Fe y Sauce Viejo"
+    />
+    <meta
+      property="og:description"
+      content="Herramienta oficial para calcular tasas inmobiliarias y municipales de Santo Tomé, Santa Fe y Sauce Viejo. Procesamiento automático desde Excel."
+    />
+    <meta property="og:image" content="/assets/calculator-og.png" />
+    <meta property="og:locale" content="es_AR" />
+    <meta property="og:site_name" content="Tasas Inmobiliarias Municipales" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://tasas-inmobiliarias.com/" />
+    <meta
+      property="twitter:title"
+      content="Calculadora de Tasas Inmobiliarias Santo Tomé, Santa Fe y Sauce Viejo"
+    />
+    <meta
+      property="twitter:description"
+      content="Calculadora oficial de tasas municipales para Santo Tomé, Santa Fe y Sauce Viejo. Procesamiento automático desde Excel."
+    />
+    <meta property="twitter:image" content="/assets/calculator-og.png" />
+
+    <!-- Geo Meta Tags -->
+    <meta name="geo.region" content="AR-S" />
+    <meta name="geo.placename" content="Santo Tomé, Santa Fe, Argentina" />
+    <meta name="geo.position" content="-31.6631;-60.7631" />
+    <meta name="ICBM" content="-31.6631, -60.7631" />
+
+    <!-- Local Business Schema -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "GovernmentService",
+        "name": "Calculadora de Tasas Inmobiliarias Santo Tomé",
+        "description": "Servicio municipal para el cálculo de tasas inmobiliarias en Santo Tomé, Santa Fe y Sauce Viejo",
+        "provider": {
+          "@type": "GovernmentOrganization",
+          "name": "Municipio de Santo Tomé",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Santo Tomé",
+            "addressRegion": "Santa Fe",
+            "addressCountry": "AR"
+          }
+        },
+        "areaServed": [
+          {
+            "@type": "City",
+            "name": "Santo Tomé",
+            "addressRegion": "Santa Fe",
+            "addressCountry": "Argentina"
+          },
+          {
+            "@type": "City",
+            "name": "Santa Fe",
+            "addressRegion": "Santa Fe",
+            "addressCountry": "Argentina"
+          },
+          {
+            "@type": "City",
+            "name": "Sauce Viejo",
+            "addressRegion": "Santa Fe",
+            "addressCountry": "Argentina"
+          }
+        ],
+        "serviceType": "Cálculo de Tasas Inmobiliarias Municipales",
+        "url": "https://tasas-inmobiliarias.com/"
+      }
+    </script>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Theme color for mobile browsers -->
+    <meta name="theme-color" content="#4285f4" />
+    <meta name="msapplication-TileColor" content="#4285f4" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Tasas Municipales" />
 
     <!-- Font Awesome for Icons -->
     <link
@@ -214,6 +309,100 @@
         text-align: center;
         color: var(--text-secondary);
         margin-bottom: 2rem;
+      }
+
+      /* Period Selection */
+      .period-selection {
+        margin-bottom: 2rem;
+      }
+
+      .period-selection h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+        text-align: center;
+      }
+
+      .radio-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+
+      .radio-option {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: var(--transition);
+        background: var(--surface);
+      }
+
+      .radio-option:hover {
+        border-color: var(--primary);
+        background: rgba(66, 133, 244, 0.02);
+      }
+
+      .radio-option input[type="radio"] {
+        display: none;
+      }
+
+      .radio-custom {
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--border);
+        border-radius: 50%;
+        position: relative;
+        transition: var(--transition);
+        flex-shrink: 0;
+      }
+
+      .radio-option input[type="radio"]:checked + .radio-custom {
+        border-color: var(--primary);
+        background: var(--primary);
+      }
+
+      .radio-option input[type="radio"]:checked + .radio-custom::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 8px;
+        height: 8px;
+        background: white;
+        border-radius: 50%;
+      }
+
+      .radio-option input[type="radio"]:checked ~ .radio-content .radio-title {
+        color: var(--primary);
+        font-weight: 600;
+      }
+
+      .radio-content {
+        flex: 1;
+      }
+
+      .radio-title {
+        font-weight: 500;
+        color: var(--text-primary);
+        margin-bottom: 0.25rem;
+        transition: var(--transition);
+      }
+
+      .radio-subtitle {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+      }
+
+      @media (max-width: 640px) {
+        .radio-group {
+          grid-template-columns: 1fr;
+        }
       }
 
       /* File Upload Area */
@@ -555,7 +744,7 @@
       <div class="navbar-content">
         <a href="/" class="navbar-brand">
           <i class="fas fa-calculator"></i>
-          <p class="navbar-title">Tasas Inmobiliarias</p>
+          <p class="navbar-title">Tasas Municipales Santo Tomé</p>
         </a>
         <div class="navbar-actions">
           <% if (user) { %>
@@ -584,10 +773,11 @@
         <div class="hero-icon">
           <i class="fas fa-calculator fa-2x"></i>
         </div>
-        <h1>Calculadora de Tasas Inmobiliarias</h1>
+        <h1>Tasas Inmobiliarias Municipales</h1>
         <p>
-          Procesa tus archivos Excel de manera rápida y profesional para obtener
-          cálculos precisos de tasas inmobiliarias
+          Calculadora oficial para Santo Tomé, Santa Fe y Sauce Viejo. Procesa
+          tus archivos Excel de manera rápida y obtén cálculos precisos de tasas
+          municipales
         </p>
       </div>
     </section>
@@ -635,6 +825,35 @@
             enctype="multipart/form-data"
             id="uploadForm"
           >
+            <!-- Period Selection -->
+            <div class="period-selection">
+              <h3>Seleccionar Período</h3>
+              <div class="radio-group">
+                <label class="radio-option">
+                  <input type="radio" name="periodo" value="este-mes" checked />
+                  <span class="radio-custom"></span>
+                  <div class="radio-content">
+                    <div class="radio-title" id="esteMessTitulo">Este Mes</div>
+                    <div class="radio-subtitle" id="esteMessSubtitulo">
+                      Obtener montos del mes actual
+                    </div>
+                  </div>
+                </label>
+
+                <label class="radio-option">
+                  <input type="radio" name="periodo" value="mes-siguiente" />
+                  <span class="radio-custom"></span>
+                  <div class="radio-content">
+                    <div class="radio-title" id="mesSiguienteTitulo">
+                      Mes Siguiente
+                    </div>
+                    <div class="radio-subtitle" id="mesSiguienteSubtitulo">
+                      Obtener montos del próximo mes
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </div>
             <!-- File Upload Area -->
             <div class="file-upload" id="fileUpload">
               <input
@@ -709,7 +928,14 @@
 
     <!-- Footer -->
     <footer class="footer">
-      <p>&copy; 2025 Calculadora de Tasas Inmobiliarias</p>
+      <p>
+        &copy; 2025 Tasas Inmobiliarias Municipales - Santo Tomé, Santa Fe y
+        Sauce Viejo
+      </p>
+      <p style="font-size: 0.9rem; margin-top: 0.5rem; opacity: 0.8">
+        Servicio oficial para el cálculo de tasas municipales en la región
+        metropolitana de Santa Fe
+      </p>
     </footer>
 
     <script>
@@ -723,7 +949,7 @@
       const uploadForm = document.getElementById("uploadForm");
       const successAlert = document.getElementById("successAlert");
       const successMessage = document.getElementById("successMessage");
-      const btnText = document.getElementById("btnText");
+      const btnTextElement = document.getElementById("btnText");
       const btnLoading = document.getElementById("btnLoading");
 
       // Drag and drop functionality
@@ -792,7 +1018,7 @@
 
       // Form submission
       uploadForm.addEventListener("submit", (e) => {
-        btnText.textContent = "Procesando...";
+        btnTextElement.textContent = "Procesando...";
         btnLoading.style.display = "inline-block";
         processBtn.disabled = true;
       });
@@ -848,6 +1074,88 @@
       // Observe elements
       document.querySelectorAll(".feature-card, .upload-card").forEach((el) => {
         observer.observe(el);
+      });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const meses = [
+          "enero",
+          "febrero",
+          "marzo",
+          "abril",
+          "mayo",
+          "junio",
+          "julio",
+          "agosto",
+          "septiembre",
+          "octubre",
+          "noviembre",
+          "diciembre",
+        ];
+
+        const hoy = new Date();
+        const mesActual = meses[hoy.getMonth()];
+        const mesSiguiente = meses[(hoy.getMonth() + 1) % 12];
+
+        console.log("Mes actual:", mesActual);
+        console.log("Mes siguiente:", mesSiguiente);
+
+        const radios = document.querySelectorAll('input[name="periodo"]');
+        const btnTextElement = document.getElementById("btnText");
+
+        // Títulos y subtítulos (usando los IDs tal cual los tenés en tu HTML)
+        const esteMesTitulo = document.getElementById("esteMessTitulo");
+        const esteMesSubtitulo = document.getElementById("esteMessSubtitulo");
+        const mesSigTitulo = document.getElementById("mesSiguienteTitulo");
+        const mesSigSubtitulo = document.getElementById(
+          "mesSiguienteSubtitulo"
+        );
+
+        console.log("Elementos encontrados:");
+        console.log("esteMesTitulo:", esteMesTitulo);
+        console.log("esteMesSubtitulo:", esteMesSubtitulo);
+        console.log("mesSigTitulo:", mesSigTitulo);
+        console.log("mesSigSubtitulo:", mesSigSubtitulo);
+
+        // Verificar que todos los elementos existan antes de modificarlos
+        if (
+          esteMesTitulo &&
+          esteMesSubtitulo &&
+          mesSigTitulo &&
+          mesSigSubtitulo
+        ) {
+          console.log("Actualizando textos...");
+          // Setear textos iniciales
+          esteMesTitulo.textContent = `Mes de ${mesActual}`;
+          esteMesSubtitulo.textContent = `Obtener montos de ${mesActual}`;
+          mesSigTitulo.textContent = `Mes de ${mesSiguiente}`;
+          mesSigSubtitulo.textContent = `Obtener montos de ${mesSiguiente}`;
+          console.log("Textos actualizados");
+        } else {
+          console.error("No se encontraron todos los elementos necesarios");
+        }
+
+        // Actualizar botón según radio seleccionado
+        function updateBtnText() {
+          const seleccionado = document.querySelector(
+            'input[name="periodo"]:checked'
+          );
+          if (seleccionado && btnTextElement) {
+            if (seleccionado.value === "este-mes") {
+              btnTextElement.textContent = `Calcular Tasas de ${mesActual}`;
+            } else {
+              btnTextElement.textContent = `Calcular Tasas de ${mesSiguiente}`;
+            }
+            console.log("Botón actualizado:", btnTextElement.textContent);
+          }
+        }
+
+        // Solo ejecutar si hay elementos válidos
+        if (btnTextElement && radios.length > 0) {
+          updateBtnText(); // inicializa al cargar
+          radios.forEach((radio) =>
+            radio.addEventListener("change", updateBtnText)
+          );
+        }
       });
     </script>
   </body>
