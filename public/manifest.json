@@ -1,0 +1,21 @@
+{
+  "name": "Tasas Inmobiliarias Municipales Santo Tomé",
+  "short_name": "Tasas Municipales",
+  "description": "Calculadora oficial de tasas inmobiliarias para Santo Tomé, Santa Fe y Sauce Viejo",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4285f4",
+  "icons": [
+    {
+      "src": "/assets/calculator.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["government", "utilities", "finance"],
+  "lang": "es",
+  "scope": "/",
+  "orientation": "portrait-primary"
+}

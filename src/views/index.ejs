@@ -4,16 +4,111 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
-      Calculadora de Tasas Inmobiliarias - Procesa Excel Profesionalmente
+      Calculadora de Tasas Inmobiliarias Santo Tomé, Santa Fe y Sauce Viejo |
+      Tasas Municipales
     </title>
     <meta
       name="description"
-      content="Herramienta profesional para calcular tasas inmobiliarias desde archivos Excel. Procesamiento rápido, cálculos precisos y descarga de plantillas."
+      content="Calculadora de tasas urbanas inmobiliarias y municipales para Santo Tomé, Santa Fe y Sauce Viejo. Procesa archivos Excel automáticamente. Cálculo preciso de impuestos inmobiliarios municipales."
     />
     <meta
       name="keywords"
-      content="tasas inmobiliarias, excel, calculadora, bienes raíces, procesamiento automático"
+      content="tasas urbanas inmobiliarias santo tome, tasas municipales santa fe, sauce viejo tasas, calculadora impuestos inmobiliarios, tasas municipales argentina, santo tome santa fe, excel tasas municipales, calculadora inmobiliaria municipal"
     />
+
+    <!-- SEO Meta Tags -->
+    <meta name="author" content="Matias Lenci" />
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="Spanish" />
+    <meta name="revisit-after" content="7 days" />
+    <meta name="distribution" content="web" />
+    <meta name="rating" content="general" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://tasas-inmobiliarias.com/" />
+    <meta
+      property="og:title"
+      content="Calculadora de Tasas Inmobiliarias Santo Tomé, Santa Fe y Sauce Viejo"
+    />
+    <meta
+      property="og:description"
+      content="Herramienta oficial para calcular tasas inmobiliarias y municipales de Santo Tomé, Santa Fe y Sauce Viejo. Procesamiento automático desde Excel."
+    />
+    <meta property="og:image" content="/assets/calculator-og.png" />
+    <meta property="og:locale" content="es_AR" />
+    <meta property="og:site_name" content="Tasas Inmobiliarias Municipales" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://tasas-inmobiliarias.com/" />
+    <meta
+      property="twitter:title"
+      content="Calculadora de Tasas Inmobiliarias Santo Tomé, Santa Fe y Sauce Viejo"
+    />
+    <meta
+      property="twitter:description"
+      content="Calculadora oficial de tasas municipales para Santo Tomé, Santa Fe y Sauce Viejo. Procesamiento automático desde Excel."
+    />
+    <meta property="twitter:image" content="/assets/calculator-og.png" />
+
+    <!-- Geo Meta Tags -->
+    <meta name="geo.region" content="AR-S" />
+    <meta name="geo.placename" content="Santo Tomé, Santa Fe, Argentina" />
+    <meta name="geo.position" content="-31.6631;-60.7631" />
+    <meta name="ICBM" content="-31.6631, -60.7631" />
+
+    <!-- Local Business Schema -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "GovernmentService",
+        "name": "Calculadora de Tasas Inmobiliarias Santo Tomé",
+        "description": "Servicio municipal para el cálculo de tasas inmobiliarias en Santo Tomé, Santa Fe y Sauce Viejo",
+        "provider": {
+          "@type": "GovernmentOrganization",
+          "name": "Municipio de Santo Tomé",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Santo Tomé",
+            "addressRegion": "Santa Fe",
+            "addressCountry": "AR"
+          }
+        },
+        "areaServed": [
+          {
+            "@type": "City",
+            "name": "Santo Tomé",
+            "addressRegion": "Santa Fe",
+            "addressCountry": "Argentina"
+          },
+          {
+            "@type": "City",
+            "name": "Santa Fe",
+            "addressRegion": "Santa Fe",
+            "addressCountry": "Argentina"
+          },
+          {
+            "@type": "City",
+            "name": "Sauce Viejo",
+            "addressRegion": "Santa Fe",
+            "addressCountry": "Argentina"
+          }
+        ],
+        "serviceType": "Cálculo de Tasas Inmobiliarias Municipales",
+        "url": "https://tasas-inmobiliarias.com/"
+      }
+    </script>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Theme color for mobile browsers -->
+    <meta name="theme-color" content="#4285f4" />
+    <meta name="msapplication-TileColor" content="#4285f4" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Tasas Municipales" />
 
     <!-- Font Awesome for Icons -->
     <link
@@ -649,7 +744,7 @@
       <div class="navbar-content">
         <a href="/" class="navbar-brand">
           <i class="fas fa-calculator"></i>
-          <p class="navbar-title">Tasas Inmobiliarias</p>
+          <p class="navbar-title">Tasas Municipales Santo Tomé</p>
         </a>
         <div class="navbar-actions">
           <% if (user) { %>
@@ -678,10 +773,11 @@
         <div class="hero-icon">
           <i class="fas fa-calculator fa-2x"></i>
         </div>
-        <h1>Calculadora de Tasas Inmobiliarias</h1>
+        <h1>Tasas Inmobiliarias Municipales</h1>
         <p>
-          Procesa tus archivos Excel de manera rápida y profesional para obtener
-          cálculos precisos de tasas inmobiliarias
+          Calculadora oficial para Santo Tomé, Santa Fe y Sauce Viejo. Procesa
+          tus archivos Excel de manera rápida y obtén cálculos precisos de tasas
+          municipales
         </p>
       </div>
     </section>
@@ -832,7 +928,14 @@
 
     <!-- Footer -->
     <footer class="footer">
-      <p>&copy; 2025 Calculadora de Tasas Inmobiliarias</p>
+      <p>
+        &copy; 2025 Tasas Inmobiliarias Municipales - Santo Tomé, Santa Fe y
+        Sauce Viejo
+      </p>
+      <p style="font-size: 0.9rem; margin-top: 0.5rem; opacity: 0.8">
+        Servicio oficial para el cálculo de tasas municipales en la región
+        metropolitana de Santa Fe
+      </p>
     </footer>
 
     <script>
