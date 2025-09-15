@@ -11,8 +11,14 @@ export const registerPage = (req, res) => {
 
 // Página de login
 export const loginPage = (req, res) => {
+  const authMessage = req.cookies.auth_message;
+  // Limpiar la cookie después de leerla
+  if (authMessage) {
+    res.clearCookie("auth_message");
+  }
+
   res.render("login", {
-    error: null,
+    error: authMessage || null,
     user: res.locals.user,
   });
 };
@@ -147,12 +153,12 @@ export const login = async (req, res) => {
       });
 
       // Si el usuario es admin, redirigir al panel de administración
-      if (
+      /*    if (
         email === "matiaslenci@gmail.com" ||
         email === "nachomontero05@gmail.com"
       ) {
         return res.redirect("/admin");
-      }
+      } */
 
       return res.redirect("/");
     }

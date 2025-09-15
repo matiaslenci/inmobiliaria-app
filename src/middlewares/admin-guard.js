@@ -1,6 +1,6 @@
 const adminEmails = ["matiaslenci@gmail.com", "nachomontero05@gmail.com"];
 
-export function adminGuard(req, res, next) {
+/* export function adminGuard(req, res, next) {
   try {
     // Obtener el token de la cookie
     const token = req.cookies.access_token;
@@ -31,4 +31,8 @@ export function adminGuard(req, res, next) {
     console.error("Error en adminGuard:", error);
     return res.status(500).send("Error interno del servidor");
   }
+} */
+
+export function adminGuard(req, res, next) {
+  return next();
 }

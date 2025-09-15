@@ -9,6 +9,14 @@ export async function authRequired(req, res, next) {
   try {
     const token = req.cookies.access_token;
     if (!token) {
+      res.cookie(
+        "auth_message",
+        "Debes iniciar sesión para acceder a esta sección",
+        {
+          maxAge: 5000, // La cookie expirará en 5 segundos
+          httpOnly: true,
+        }
+      );
       return res.redirect("/login");
     }
 
