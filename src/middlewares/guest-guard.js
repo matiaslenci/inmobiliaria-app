@@ -6,7 +6,7 @@ import supabase from "../utils/client.js";
  * Si no está logueado, permite continuar a la siguiente función middleware o ruta.
  */
 export async function guestOnly(req, res, next) {
-  const token = req.cookies.sb_access_token;
+  const token = req.cookies.access_token;
 
   if (!token) {
     return next(); // no hay sesión → puede ver login/register

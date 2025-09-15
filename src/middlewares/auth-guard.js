@@ -5,11 +5,18 @@ import supabase from "../utils/client.js";
  * Si no lo está, redirige al login.
  * Si lo está, permite continuar a la siguiente función middleware o ruta.
  */
-/* export async function authRequired(req, res, next) {
+export async function authRequired(req, res, next) {
   try {
-    const token = req.cookies.sb_access_token;
-
+    const token = req.cookies.access_token;
     if (!token) {
+      res.cookie(
+        "auth_message",
+        "Debes iniciar sesión para acceder a esta sección",
+        {
+          maxAge: 5000, // La cookie expirará en 5 segundos
+          httpOnly: true,
+        }
+      );
       return res.redirect("/login");
     }
 
@@ -31,10 +38,10 @@ import supabase from "../utils/client.js";
     return res.redirect("/login");
   }
 }
- */
-export async function authRequired(req, res, next) {
+
+/* export async function authRequired(req, res, next) {
   return next();
-}
+} */
 
 /* export function isAdmin(req, res, next) {
   if (!req.session || !req.session.user || !req.session.user.isAdmin) {
@@ -42,5 +49,4 @@ export async function authRequired(req, res, next) {
     return res.redirect("/profile");
   }
   next();
-}
- */
+} */

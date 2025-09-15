@@ -6,6 +6,7 @@ import consultaRoutes from "./routes/consulta.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import consultaSauceRoutes from "./routes/consulta-sauce.routes.js";
 import { supabase } from "./utils/client.js";
+import adminRoutes from "./routes/admin.routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,7 +22,7 @@ app.use(cookieParser());
 app.use(async (req, res, next) => {
   try {
     // Obtener el token desde las cookies
-    const token = req.cookies?.sb_access_token;
+    const token = req.cookies?.access_token;
 
     if (token) {
       // Validar el token con Supabase
@@ -33,7 +34,7 @@ app.use(async (req, res, next) => {
       if (error) {
         console.error("Error al obtener usuario:", error.message);
         // Token inválido, limpiar cookie
-        res.clearCookie("sb_access_token");
+        res.clearCookie("access_token");
         res.locals.user = null;
       } else {
         res.locals.user = user;
@@ -59,5 +60,6 @@ app.use(express.static(path.join(__dirname, "../public")));
 app.use("/", consultaRoutes);
 app.use("/", authRoutes);
 app.use("/", consultaSauceRoutes);
+app.use("/admin", adminRoutes);
 
 export default app;
