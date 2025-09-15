@@ -73,7 +73,7 @@ export const processRegister = async (req, res) => {
 
     // Usuario creado y autenticado automáticamente
     if (data.session) {
-      res.cookie("sb_access_token", data.session.access_token, {
+      res.cookie("access_token", data.session.access_token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
@@ -130,13 +130,29 @@ export const login = async (req, res) => {
     }
 
     if (data.session) {
-      // Login exitoso, establecer cookie
-      res.cookie("sb_access_token", data.session.access_token, {
+      // Login exitoso, establecer cookies
+      res.cookie("access_token", data.session.access_token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
         sameSite: "lax",
       });
+
+      // Establecer cookie con el email del usuario
+      res.cookie("user_email", email, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
+        sameSite: "lax",
+      });
+
+      // Si el usuario es admin, redirigir al panel de administración
+      if (
+        email === "matiaslenci@gmail.com" ||
+        email === "nachomontero05@gmail.com"
+      ) {
+        return res.redirect("/admin");
+      }
 
       return res.redirect("/");
     }
@@ -152,17 +168,22 @@ export const login = async (req, res) => {
 // Cerrar sesión
 export const logout = async (req, res) => {
   try {
-    const token = req.cookies?.sb_access_token;
+    const token = req.cookies?.access_token;
 
     if (token) {
       await supabase.auth.signOut();
     }
 
-    res.clearCookie("sb_access_token");
+    // Limpiar todas las cookies de autenticación
+    res.clearCookie("access_token");
+    res.clearCookie("user_email");
+
     res.redirect("/");
   } catch (error) {
     console.error("Error en logout:", error);
-    res.clearCookie("sb_access_token");
+    // Asegurarse de limpiar las cookies incluso si hay un error
+    res.clearCookie("access_token");
+    res.clearCookie("user_email");
     res.redirect("/");
   }
 };
@@ -170,7 +191,7 @@ export const logout = async (req, res) => {
 // Perfil del usuario
 export const getProfile = async (req, res) => {
   try {
-    const token = req.cookies?.sb_access_token;
+    const token = req.cookies?.access_token;
     if (!token) {
       return res.redirect("/login");
     }
@@ -181,14 +202,14 @@ export const getProfile = async (req, res) => {
     } = await supabase.auth.getUser(token);
 
     if (error || !user) {
-      res.clearCookie("sb_access_token");
+      res.clearCookie("access_token");
       return res.redirect("/login");
     }
 
     res.render("profile", { user });
   } catch (error) {
     console.error("Error obteniendo perfil:", error);
-    res.clearCookie("sb_access_token");
+    res.clearCookie("access_token");
     res.redirect("/login");
   }
 };
