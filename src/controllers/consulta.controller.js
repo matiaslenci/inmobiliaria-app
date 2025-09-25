@@ -59,21 +59,20 @@ export const procesarConsulta = async (req, res) => {
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
 
-    // Convertir a JSON usando encabezados reales
-    const jsonData = xlsx.utils.sheet_to_json(worksheet);
+    // Convertir a JSON usando encabezados reales, preservando filas/celdas vacías
+    const jsonData = xlsx.utils.sheet_to_json(worksheet, {
+      defval: "", // devuelve cadena vacía en celdas vacías para no desplazar columnas
+      blankrows: true, // preserva filas completamente vacías para no desalinear
+    });
 
     // Validar que existan las columnas necesarias
     const firstRow = jsonData[0] || {};
-    if (
-      !("CUENTA AGUA" in firstRow) ||
-      !("CUENTA TASA" in firstRow) ||
-      !("CIUDAD" in firstRow)
-    ) {
+    if (!("CUENTA AGUA" in firstRow) || !("CUENTA TASA" in firstRow)) {
       fs.unlinkSync(req.file.path); // eliminar archivo subido
       return res.render("index", {
         title: "Consulta Liquidaciones",
         error:
-          "No se encuentran las columnas 'CUENTA AGUA', 'CUENTA TASA' y/o 'CIUDAD' en el archivo",
+          "No se encuentran las columnas 'CUENTA AGUA' y/o 'CUENTA TASA' en el archivo",
       });
     }
 
@@ -84,38 +83,54 @@ export const procesarConsulta = async (req, res) => {
     const locatarios = [];
 
     jsonData.forEach((row) => {
-      if (row["DIRECCION INMUEBLE"]) {
+      // Dirección
+      if (
+        row["DIRECCION INMUEBLE"] &&
+        String(row["DIRECCION INMUEBLE"]).trim() !== ""
+      ) {
         direcciones.push(String(row["DIRECCION INMUEBLE"]));
+      } else {
+        direcciones.push("-");
       }
-      if (row["CUENTA AGUA"]) {
+      // Cuenta Agua
+      if (row["CUENTA AGUA"] && String(row["CUENTA AGUA"]).trim() !== "") {
         cuentasAgua.push(String(row["CUENTA AGUA"]));
+      } else {
+        cuentasAgua.push("-");
       }
-      if (row["CUENTA TASA"]) {
+      // Cuenta Tasa
+      if (row["CUENTA TASA"] && String(row["CUENTA TASA"]).trim() !== "") {
         cuentasTasas.push(String(row["CUENTA TASA"]));
+      } else {
+        cuentasTasas.push("-");
       }
-      if (row["CIUDAD"]) {
+      // Ciudad (ya no es requerida, se rellena con '-')
+      if (row["CIUDAD"] && String(row["CIUDAD"]).trim() !== "") {
         ciudades.push(String(row["CIUDAD"]).toUpperCase().trim());
       } else {
-        ciudades.push("");
+        ciudades.push("-");
       }
-      // Si existe la columna LOCATARIO, agregarla
-      if ("LOCATARIO" in row) {
-        locatarios.push(row["LOCATARIO"] ? String(row["LOCATARIO"]) : "");
+      // Locatario
+      if (
+        "LOCATARIO" in row &&
+        row["LOCATARIO"] &&
+        String(row["LOCATARIO"]).trim() !== ""
+      ) {
+        locatarios.push(String(row["LOCATARIO"]));
       } else {
-        locatarios.push("");
+        locatarios.push("-");
       }
     });
 
     // Función para procesar en lotes con control de concurrencia optimizado
     const procesarEnLotes = async (
       cuentas,
-      ciudadesArray,
       funcionConsulta,
       filaIndice,
       batchSize = 5,
       baseDelay = 500
     ) => {
-      const resultados = new Array(cuentas.length).fill("");
+      const resultados = new Array(cuentas.length).fill("-");
       let procesados = 0;
       let errores = 0;
       let consecutiveErrors = 0;
@@ -126,13 +141,17 @@ export const procesarConsulta = async (req, res) => {
 
         // Preparar lote de máximo batchSize elementos
         for (let j = i; j < Math.min(i + batchSize, cuentas.length); j++) {
-          if (ciudadesArray[j] === "ST" && cuentas[j]) {
+          // Solo procesar si la cuenta no es vacía ni guion
+          if (cuentas[j] && cuentas[j] !== "-") {
             lote.push(
               funcionConsulta(cuentas[j], filaIndice)
                 .then((resultado) => ({ exito: true, resultado }))
                 .catch((error) => ({ exito: false, error: error.message }))
             );
             indices.push(j);
+          } else {
+            // Si la cuenta es vacía o guion, dejar el resultado como "-"
+            resultados[j] = "-";
           }
         }
 
@@ -190,7 +209,6 @@ export const procesarConsulta = async (req, res) => {
     // Procesar agua primero con configuración optimizada
     const montosAgua = await procesarEnLotes(
       cuentasAgua,
-      ciudades,
       obtenerMontoAgua,
       filaIndice,
       5,
@@ -203,7 +221,6 @@ export const procesarConsulta = async (req, res) => {
     // Procesar tasas después con configuración optimizada
     const montosTasas = await procesarEnLotes(
       cuentasTasas,
-      ciudades,
       obtenerMontoTasas,
       filaIndice,
       5,
@@ -227,8 +244,14 @@ export const procesarConsulta = async (req, res) => {
       montosTasas,
       locatarios,
       totalRecords: Math.max(cuentasAgua.length, cuentasTasas.length),
-      waterAccounts: cuentasAgua.filter((c) => c && c !== "-").length,
-      taxAccounts: cuentasTasas.filter((c) => c && c !== "-").length,
+      waterAccounts: cuentasAgua.reduce(
+        (acc, c) => acc + (c && c !== "-" ? 1 : 0),
+        0
+      ),
+      taxAccounts: cuentasTasas.reduce(
+        (acc, c) => acc + (c && c !== "-" ? 1 : 0),
+        0
+      ),
       periodo,
       mesSeleccionado,
       periodoTexto,
@@ -293,22 +316,23 @@ export const descargarResultados = (req, res) => {
   } = req.body;
 
   // Determinar si hay columna locatario y dirección
+  const esValorInformativo = (v) =>
+    typeof v === "string" && v.trim() !== "" && v.trim() !== "-";
+
   const mostrarLocatario =
-    Array.isArray(locatarios) && locatarios.some((l) => l && l.trim() !== "");
+    Array.isArray(locatarios) && locatarios.some((l) => esValorInformativo(l));
   const mostrarDireccion =
-    Array.isArray(direcciones) && direcciones.some((d) => d && d.trim() !== "");
+    Array.isArray(direcciones) &&
+    direcciones.some((d) => esValorInformativo(d));
+  const mostrarCiudad =
+    Array.isArray(ciudades) && ciudades.some((c) => esValorInformativo(c));
 
   // Encabezados dinámicos
   const columnas = [];
   if (mostrarDireccion) columnas.push("DIRECCION INMUEBLE");
   if (mostrarLocatario) columnas.push("LOCATARIO");
-  columnas.push(
-    "CIUDAD",
-    "CUENTA AGUA",
-    "MONTO AGUA",
-    "CUENTA TASA",
-    "MONTO TASAS"
-  );
+  if (mostrarCiudad) columnas.push("CIUDAD");
+  columnas.push("CUENTA AGUA", "MONTO AGUA", "CUENTA TASA", "MONTO TASAS");
 
   // Construir filas
   const filas = [columnas];
@@ -325,8 +349,8 @@ export const descargarResultados = (req, res) => {
     const fila = [];
     if (mostrarDireccion) fila.push(direcciones[i] || "");
     if (mostrarLocatario) fila.push(locatarios[i] || "");
+    if (mostrarCiudad) fila.push(ciudades[i] || "");
     fila.push(
-      ciudades[i] || "",
       cuentasAgua[i] || "",
       montosAgua[i] || "",
       cuentasTasas[i] || "",

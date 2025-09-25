@@ -288,6 +288,7 @@
         justify-content: center;
         flex-wrap: wrap;
         margin-top: 2rem;
+        margin-bottom: 2rem;
       }
 
       .btn {
@@ -568,10 +569,11 @@
           </h2>
         </div>
 
-        <% const mostrarLocatario = Array.isArray(locatarios) &&
-        locatarios.some(l => l && l.trim() !== ""); const mostrarDireccion =
-        Array.isArray(direcciones) && direcciones.some(d => d && d.trim() !==
-        ""); %> <% if (totalRecords > 0) { %>
+  <% const mostrarLocatario = Array.isArray(locatarios) &&
+  locatarios.some(l => l && l.trim() !== ""); const mostrarDireccion =
+  Array.isArray(direcciones) && direcciones.some(d => d && d.trim() !==
+  ""); %>
+  <% if (totalRecords > 0) { %>
         <div class="table-wrapper">
           <table class="results-table">
             <thead>
@@ -581,7 +583,6 @@
                 <% } %> <% if (mostrarLocatario) { %>
                 <th><i class="fas fa-user"></i> Locatario</th>
                 <% } %>
-                <th><i class="fas fa-home"></i> Ciudad</th>
                 <th><i class="fas fa-tint"></i> Cuenta Agua</th>
                 <th><i class="fas fa-dollar-sign"></i> Monto Agua</th>
                 <th><i class="fas fa-calculator"></i> Cuenta Tasa</th>
@@ -610,14 +611,6 @@
                   <% } %>
                 </td>
                 <% } %>
-                <td>
-                  <% if (typeof ciudades !== 'undefined' && ciudades[i] &&
-                  ciudades[i] !== '-') { %>
-                  <span class="account-number"><%= ciudades[i] %></span>
-                  <% } else { %>
-                  <span class="empty-cell">-</span>
-                  <% } %>
-                </td>
                 <td>
                   <% if (typeof cuentasAgua !== 'undefined' && cuentasAgua[i] &&
                   cuentasAgua[i] !== '-') { %>
@@ -662,7 +655,6 @@
           <p>No se encontraron registros en el archivo procesado.</p>
         </div>
         <% } %>
-      </div>
 
       <!-- Action Buttons -->
       <div class="actions animate-fade-in-up">
@@ -677,8 +669,8 @@
         </button>
 
         <button id="exportar-excel" class="btn btn-success" type="button">
-          <i class="fas fa-download"></i>
-          Exportar Excel
+          <i class="fas fa-file-export"></i>
+          Exportar a Excel
         </button>
       </div>
     </main>
