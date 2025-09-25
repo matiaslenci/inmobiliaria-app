@@ -79,7 +79,6 @@ export const procesarConsulta = async (req, res) => {
     const cuentasAgua = [];
     const direcciones = [];
     const cuentasTasas = [];
-    const ciudades = [];
     const locatarios = [];
 
     jsonData.forEach((row) => {
@@ -104,12 +103,7 @@ export const procesarConsulta = async (req, res) => {
       } else {
         cuentasTasas.push("-");
       }
-      // Ciudad (ya no es requerida, se rellena con '-')
-      if (row["CIUDAD"] && String(row["CIUDAD"]).trim() !== "") {
-        ciudades.push(String(row["CIUDAD"]).toUpperCase().trim());
-      } else {
-        ciudades.push("-");
-      }
+
       // Locatario
       if (
         "LOCATARIO" in row &&
@@ -168,9 +162,6 @@ export const procesarConsulta = async (req, res) => {
                 resultados[indices[idx]] = "Error al obtener monto";
                 errores++;
                 erroresEnLote++;
-                console.error(
-                  `Error en cuenta ${cuentas[indices[idx]]}: ${resultado.error}`
-                );
               }
             });
 
@@ -181,6 +172,7 @@ export const procesarConsulta = async (req, res) => {
               consecutiveErrors = 0;
             }
 
+            //TODO: revisar
             // Delay entre lotes con backoff adaptativo
             if (i + batchSize < cuentas.length) {
               const adaptiveDelay = baseDelay + consecutiveErrors * 300;
@@ -237,7 +229,6 @@ export const procesarConsulta = async (req, res) => {
     res.render("resultado", {
       title: "Resultados Consulta",
       direcciones,
-      ciudades,
       cuentasAgua,
       cuentasTasas,
       montosAgua,
@@ -276,9 +267,7 @@ export const procesarConsulta = async (req, res) => {
 };
 
 export const descargarPlantilla = (req, res) => {
-  const columnas = [
-    ["DIRECCION INMUEBLE", "CIUDAD", "CUENTA TASA", "CUENTA AGUA"],
-  ];
+  const columnas = [["DIRECCION INMUEBLE", "CUENTA TASA", "CUENTA AGUA"]];
 
   // Crear libro y hoja
   const workbook = xlsx.utils.book_new();
@@ -307,7 +296,6 @@ export const descargarResultados = (req, res) => {
   // Aquí se asume que los datos llegan por POST (body)
   const {
     direcciones = [],
-    ciudades = [],
     cuentasAgua = [],
     cuentasTasas = [],
     montosAgua = [],
@@ -324,21 +312,17 @@ export const descargarResultados = (req, res) => {
   const mostrarDireccion =
     Array.isArray(direcciones) &&
     direcciones.some((d) => esValorInformativo(d));
-  const mostrarCiudad =
-    Array.isArray(ciudades) && ciudades.some((c) => esValorInformativo(c));
 
   // Encabezados dinámicos
   const columnas = [];
   if (mostrarDireccion) columnas.push("DIRECCION INMUEBLE");
   if (mostrarLocatario) columnas.push("LOCATARIO");
-  if (mostrarCiudad) columnas.push("CIUDAD");
   columnas.push("CUENTA AGUA", "MONTO AGUA", "CUENTA TASA", "MONTO TASAS");
 
   // Construir filas
   const filas = [columnas];
   const total = Math.max(
     direcciones.length,
-    ciudades.length,
     cuentasAgua.length,
     cuentasTasas.length,
     montosAgua.length,
@@ -349,7 +333,6 @@ export const descargarResultados = (req, res) => {
     const fila = [];
     if (mostrarDireccion) fila.push(direcciones[i] || "");
     if (mostrarLocatario) fila.push(locatarios[i] || "");
-    if (mostrarCiudad) fila.push(ciudades[i] || "");
     fila.push(
       cuentasAgua[i] || "",
       montosAgua[i] || "",

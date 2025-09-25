@@ -764,7 +764,6 @@
           locatario: headers.findIndex((h) =>
             h.toLowerCase().includes("locatario")
           ),
-          ciudad: headers.findIndex((h) => h.toLowerCase().includes("ciudad")),
           cuentaAgua: headers.findIndex((h) =>
             h.toLowerCase().includes("agua")
           ),
@@ -779,7 +778,6 @@
           ),
         };
         const direcciones = [],
-          ciudades = [],
           cuentasAgua = [],
           cuentasTasas = [],
           montosAgua = [],
@@ -789,7 +787,6 @@
           const f = filas[i];
           if (idx.direccion !== -1) direcciones.push(f[idx.direccion] || "");
           if (idx.locatario !== -1) locatarios.push(f[idx.locatario] || "");
-          if (idx.ciudad !== -1) ciudades.push(f[idx.ciudad] || "");
           if (idx.cuentaAgua !== -1) cuentasAgua.push(f[idx.cuentaAgua] || "");
           if (idx.montoAgua !== -1) montosAgua.push(f[idx.montoAgua] || "");
           if (idx.cuentaTasa !== -1) cuentasTasas.push(f[idx.cuentaTasa] || "");
@@ -804,7 +801,6 @@
           },
           body: JSON.stringify({
             direcciones,
-            ciudades,
             cuentasAgua,
             cuentasTasas,
             montosAgua,
