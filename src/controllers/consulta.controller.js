@@ -59,8 +59,11 @@ export const procesarConsulta = async (req, res) => {
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
 
-    // Convertir a JSON usando encabezados reales
-    const jsonData = xlsx.utils.sheet_to_json(worksheet);
+    // Convertir a JSON usando encabezados reales, preservando filas/celdas vacías
+    const jsonData = xlsx.utils.sheet_to_json(worksheet, {
+      defval: "", // devuelve cadena vacía en celdas vacías para no desplazar columnas
+      blankrows: true, // preserva filas completamente vacías para no desalinear
+    });
 
     // Validar que existan las columnas necesarias
     const firstRow = jsonData[0] || {};
@@ -84,25 +87,42 @@ export const procesarConsulta = async (req, res) => {
     const locatarios = [];
 
     jsonData.forEach((row) => {
-      if (row["DIRECCION INMUEBLE"]) {
+      // Dirección
+      if (
+        row["DIRECCION INMUEBLE"] &&
+        String(row["DIRECCION INMUEBLE"]).trim() !== ""
+      ) {
         direcciones.push(String(row["DIRECCION INMUEBLE"]));
+      } else {
+        direcciones.push("-");
       }
-      if (row["CUENTA AGUA"]) {
+      // Cuenta Agua
+      if (row["CUENTA AGUA"] && String(row["CUENTA AGUA"]).trim() !== "") {
         cuentasAgua.push(String(row["CUENTA AGUA"]));
+      } else {
+        cuentasAgua.push("-");
       }
-      if (row["CUENTA TASA"]) {
+      // Cuenta Tasa
+      if (row["CUENTA TASA"] && String(row["CUENTA TASA"]).trim() !== "") {
         cuentasTasas.push(String(row["CUENTA TASA"]));
+      } else {
+        cuentasTasas.push("-");
       }
-      if (row["CIUDAD"]) {
+      // Ciudad
+      if (row["CIUDAD"] && String(row["CIUDAD"]).trim() !== "") {
         ciudades.push(String(row["CIUDAD"]).toUpperCase().trim());
       } else {
-        ciudades.push("");
+        ciudades.push("-");
       }
-      // Si existe la columna LOCATARIO, agregarla
-      if ("LOCATARIO" in row) {
-        locatarios.push(row["LOCATARIO"] ? String(row["LOCATARIO"]) : "");
+      // Locatario
+      if (
+        "LOCATARIO" in row &&
+        row["LOCATARIO"] &&
+        String(row["LOCATARIO"]).trim() !== ""
+      ) {
+        locatarios.push(String(row["LOCATARIO"]));
       } else {
-        locatarios.push("");
+        locatarios.push("-");
       }
     });
 
@@ -115,7 +135,7 @@ export const procesarConsulta = async (req, res) => {
       batchSize = 5,
       baseDelay = 500
     ) => {
-      const resultados = new Array(cuentas.length).fill("");
+      const resultados = new Array(cuentas.length).fill("-");
       let procesados = 0;
       let errores = 0;
       let consecutiveErrors = 0;
@@ -126,13 +146,17 @@ export const procesarConsulta = async (req, res) => {
 
         // Preparar lote de máximo batchSize elementos
         for (let j = i; j < Math.min(i + batchSize, cuentas.length); j++) {
-          if (ciudadesArray[j] === "ST" && cuentas[j]) {
+          // Solo procesar si la cuenta no es vacía ni guion
+          if (ciudadesArray[j] === "ST" && cuentas[j] && cuentas[j] !== "-") {
             lote.push(
               funcionConsulta(cuentas[j], filaIndice)
                 .then((resultado) => ({ exito: true, resultado }))
                 .catch((error) => ({ exito: false, error: error.message }))
             );
             indices.push(j);
+          } else {
+            // Si la cuenta es vacía o guion, dejar el resultado como "-"
+            resultados[j] = "-";
           }
         }
 
@@ -293,10 +317,14 @@ export const descargarResultados = (req, res) => {
   } = req.body;
 
   // Determinar si hay columna locatario y dirección
+  const esValorInformativo = (v) =>
+    typeof v === "string" && v.trim() !== "" && v.trim() !== "-";
+
   const mostrarLocatario =
-    Array.isArray(locatarios) && locatarios.some((l) => l && l.trim() !== "");
+    Array.isArray(locatarios) && locatarios.some((l) => esValorInformativo(l));
   const mostrarDireccion =
-    Array.isArray(direcciones) && direcciones.some((d) => d && d.trim() !== "");
+    Array.isArray(direcciones) &&
+    direcciones.some((d) => esValorInformativo(d));
 
   // Encabezados dinámicos
   const columnas = [];
