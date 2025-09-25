@@ -67,16 +67,12 @@ export const procesarConsulta = async (req, res) => {
 
     // Validar que existan las columnas necesarias
     const firstRow = jsonData[0] || {};
-    if (
-      !("CUENTA AGUA" in firstRow) ||
-      !("CUENTA TASA" in firstRow) ||
-      !("CIUDAD" in firstRow)
-    ) {
+    if (!("CUENTA AGUA" in firstRow) || !("CUENTA TASA" in firstRow)) {
       fs.unlinkSync(req.file.path); // eliminar archivo subido
       return res.render("index", {
         title: "Consulta Liquidaciones",
         error:
-          "No se encuentran las columnas 'CUENTA AGUA', 'CUENTA TASA' y/o 'CIUDAD' en el archivo",
+          "No se encuentran las columnas 'CUENTA AGUA' y/o 'CUENTA TASA' en el archivo",
       });
     }
 
@@ -108,7 +104,7 @@ export const procesarConsulta = async (req, res) => {
       } else {
         cuentasTasas.push("-");
       }
-      // Ciudad
+      // Ciudad (ya no es requerida, se rellena con '-')
       if (row["CIUDAD"] && String(row["CIUDAD"]).trim() !== "") {
         ciudades.push(String(row["CIUDAD"]).toUpperCase().trim());
       } else {
@@ -129,7 +125,6 @@ export const procesarConsulta = async (req, res) => {
     // Función para procesar en lotes con control de concurrencia optimizado
     const procesarEnLotes = async (
       cuentas,
-      ciudadesArray,
       funcionConsulta,
       filaIndice,
       batchSize = 5,
@@ -147,7 +142,7 @@ export const procesarConsulta = async (req, res) => {
         // Preparar lote de máximo batchSize elementos
         for (let j = i; j < Math.min(i + batchSize, cuentas.length); j++) {
           // Solo procesar si la cuenta no es vacía ni guion
-          if (ciudadesArray[j] === "ST" && cuentas[j] && cuentas[j] !== "-") {
+          if (cuentas[j] && cuentas[j] !== "-") {
             lote.push(
               funcionConsulta(cuentas[j], filaIndice)
                 .then((resultado) => ({ exito: true, resultado }))
@@ -214,7 +209,6 @@ export const procesarConsulta = async (req, res) => {
     // Procesar agua primero con configuración optimizada
     const montosAgua = await procesarEnLotes(
       cuentasAgua,
-      ciudades,
       obtenerMontoAgua,
       filaIndice,
       5,
@@ -227,7 +221,6 @@ export const procesarConsulta = async (req, res) => {
     // Procesar tasas después con configuración optimizada
     const montosTasas = await procesarEnLotes(
       cuentasTasas,
-      ciudades,
       obtenerMontoTasas,
       filaIndice,
       5,
@@ -251,8 +244,14 @@ export const procesarConsulta = async (req, res) => {
       montosTasas,
       locatarios,
       totalRecords: Math.max(cuentasAgua.length, cuentasTasas.length),
-      waterAccounts: cuentasAgua.filter((c) => c && c !== "-").length,
-      taxAccounts: cuentasTasas.filter((c) => c && c !== "-").length,
+      waterAccounts: cuentasAgua.reduce(
+        (acc, c) => acc + (c && c !== "-" ? 1 : 0),
+        0
+      ),
+      taxAccounts: cuentasTasas.reduce(
+        (acc, c) => acc + (c && c !== "-" ? 1 : 0),
+        0
+      ),
       periodo,
       mesSeleccionado,
       periodoTexto,
@@ -325,18 +324,15 @@ export const descargarResultados = (req, res) => {
   const mostrarDireccion =
     Array.isArray(direcciones) &&
     direcciones.some((d) => esValorInformativo(d));
+  const mostrarCiudad =
+    Array.isArray(ciudades) && ciudades.some((c) => esValorInformativo(c));
 
   // Encabezados dinámicos
   const columnas = [];
   if (mostrarDireccion) columnas.push("DIRECCION INMUEBLE");
   if (mostrarLocatario) columnas.push("LOCATARIO");
-  columnas.push(
-    "CIUDAD",
-    "CUENTA AGUA",
-    "MONTO AGUA",
-    "CUENTA TASA",
-    "MONTO TASAS"
-  );
+  if (mostrarCiudad) columnas.push("CIUDAD");
+  columnas.push("CUENTA AGUA", "MONTO AGUA", "CUENTA TASA", "MONTO TASAS");
 
   // Construir filas
   const filas = [columnas];
@@ -353,8 +349,8 @@ export const descargarResultados = (req, res) => {
     const fila = [];
     if (mostrarDireccion) fila.push(direcciones[i] || "");
     if (mostrarLocatario) fila.push(locatarios[i] || "");
+    if (mostrarCiudad) fila.push(ciudades[i] || "");
     fila.push(
-      ciudades[i] || "",
       cuentasAgua[i] || "",
       montosAgua[i] || "",
       cuentasTasas[i] || "",

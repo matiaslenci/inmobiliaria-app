@@ -20,7 +20,6 @@
     <meta name="author" content="Matias Lenci" />
     <meta name="robots" content="index, follow" />
     <meta name="language" content="Spanish" />
-    <meta name="revisit-after" content="7 days" />
     <meta name="distribution" content="web" />
     <meta name="rating" content="general" />
 
@@ -853,6 +852,36 @@
                   </div>
                 </label>
               </div>
+            </div>
+
+            <!-- Localidad Selection -->
+            <div class="period-selection">
+              <h3>Seleccionar Localidad</h3>
+              <label class="radio-option" style="display: block">
+                <div class="radio-content">
+                  <div class="radio-title">Localidad de cálculo</div>
+                  <div class="radio-subtitle">
+                    Selecciona la localidad para aplicar las tasas
+                  </div>
+                </div>
+                <select
+                  name="localidad"
+                  id="localidad"
+                  required
+                  style="
+                    margin-left: auto;
+                    padding: 0.5rem;
+                    border: 2px solid var(--border);
+                    border-radius: 8px;
+                  "
+                >
+                  <option value="ST" selected>Santo Tomé</option>
+                  <option value="SF" disabled>Santa Fe (Próximamente)</option>
+                  <option value="SV" disabled>
+                    Sauce Viejo (Próximamente)
+                  </option>
+                </select>
+              </label>
             </div>
             <!-- File Upload Area -->
             <div class="file-upload" id="fileUpload">
