@@ -4,6 +4,7 @@ import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
 import consultaRoutes from "./routes/consulta.routes.js";
 import authRoutes from "./routes/auth.routes.js";
+import feedbackRoutes from "./routes/feedback.routes.js";
 import consultaSauceRoutes from "./routes/consulta-sauce.routes.js";
 import { supabase } from "./utils/client.js";
 import adminRoutes from "./routes/admin.routes.js";
@@ -60,6 +61,7 @@ app.use(express.static(path.join(__dirname, "../public")));
 app.use("/", consultaRoutes);
 app.use("/", authRoutes);
 app.use("/", consultaSauceRoutes);
+app.use("/", feedbackRoutes);
 app.use("/admin", adminRoutes);
 
 export default app;

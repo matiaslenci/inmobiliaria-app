@@ -1204,7 +1204,6 @@
         const mesSigSubtitulo = document.getElementById(
           "mesSiguienteSubtitulo"
         );
-
         const widget = document.getElementById("feedback-widget");
         const form = document.getElementById("feedback-form");
         const sendBtn = document.getElementById("feedback-send");
@@ -1219,12 +1218,25 @@
           const message = textarea.value.trim();
           if (!message) return alert("Escribe algo antes de enviar.");
 
-          // Aquí envías el mensaje al backend o a un email
-          console.log("Sugerencia enviada:", message);
-
-          alert("Gracias por tu sugerencia!");
-          textarea.value = "";
-          form.style.display = "none";
+          fetch("/feedback", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.success) {
+                alert("Gracias por tu sugerencia!");
+                textarea.value = "";
+                form.style.display = "none";
+              } else {
+                alert("Error: " + data.msg);
+              }
+            })
+            .catch((err) => {
+              console.error(err);
+              alert("Error al enviar la sugerencia");
+            });
         });
 
         // Verificar que todos los elementos existan antes de modificarlos
