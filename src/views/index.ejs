@@ -758,6 +758,45 @@
           gap: 0.5rem;
         }
       }
+      #feedback-widget {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #007bff;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: sans-serif;
+        z-index: 1000;
+      }
+      #feedback-form {
+        display: none;
+        position: fixed;
+        bottom: 60px;
+        right: 20px;
+        background: white;
+        border: 1px solid #ccc;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        z-index: 1001;
+        width: 250px;
+        font-family: sans-serif;
+      }
+      #feedback-form textarea {
+        width: 100%;
+        height: 80px;
+        margin-bottom: 10px;
+      }
+      #feedback-form button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
@@ -989,7 +1028,11 @@
         Servicio para el cálculo de tasas municipales en Santa Fe
       </p>
     </footer>
-
+    <div id="feedback-widget">💡 Sugerencia</div>
+    <div id="feedback-form">
+      <textarea placeholder="Escribe tu sugerencia..."></textarea>
+      <button id="feedback-send">Enviar</button>
+    </div>
     <script>
       // File upload functionality
       const fileUpload = document.getElementById("fileUpload");
@@ -1162,11 +1205,27 @@
           "mesSiguienteSubtitulo"
         );
 
-        console.log("Elementos encontrados:");
-        console.log("esteMesTitulo:", esteMesTitulo);
-        console.log("esteMesSubtitulo:", esteMesSubtitulo);
-        console.log("mesSigTitulo:", mesSigTitulo);
-        console.log("mesSigSubtitulo:", mesSigSubtitulo);
+        const widget = document.getElementById("feedback-widget");
+        const form = document.getElementById("feedback-form");
+        const sendBtn = document.getElementById("feedback-send");
+
+        widget.addEventListener("click", () => {
+          form.style.display =
+            form.style.display === "block" ? "none" : "block";
+        });
+
+        sendBtn.addEventListener("click", () => {
+          const textarea = form.querySelector("textarea");
+          const message = textarea.value.trim();
+          if (!message) return alert("Escribe algo antes de enviar.");
+
+          // Aquí envías el mensaje al backend o a un email
+          console.log("Sugerencia enviada:", message);
+
+          alert("Gracias por tu sugerencia!");
+          textarea.value = "";
+          form.style.display = "none";
+        });
 
         // Verificar que todos los elementos existan antes de modificarlos
         if (
