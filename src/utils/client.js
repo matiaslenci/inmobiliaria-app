@@ -1,18 +1,6 @@
-import { createClient } from "@supabase/supabase-js";
-import dotenv from "dotenv";
+// Supabase deshabilitado - conexión no requerida
+// Este módulo se mantiene para compatibilidad pero no inicializa Supabase
 
-dotenv.config({ path: `./env/.env` }); // para leer tu .env
+export const supabase = null;
 
-// ⚠️ Estas variables deben estar en tu .env
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(
-    "Faltan las variables SUPABASE_URL o SUPABASE_ANON_KEY en el archivo .env"
-  );
-}
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-export default supabase;
+export default null;
