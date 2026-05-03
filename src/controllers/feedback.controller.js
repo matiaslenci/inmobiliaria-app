@@ -1,34 +1,26 @@
-import { supabase } from "../utils/client.js";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
-export const saveFeedback = async (req, res) => {
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const FEEDBACK_FILE = path.join(__dirname, "../../feedback.jsonl");
+
+export const saveFeedback = (req, res) => {
+  const { message } = req.body;
+
+  if (!message?.trim()) {
+    return res.status(400).json({ success: false, msg: "Mensaje vacío" });
+  }
+
   try {
-    const { message } = req.body;
-
-    if (!message || message.trim() === "") {
-      return res.status(400).json({ success: false, msg: "Mensaje vacío" });
-    }
-
-    const userId = req.user ? req.user.id : null; // tu middleware de auth debería llenar req.user
-
-    const { error } = await supabase.from("feedback").insert([
-      {
-        message,
-        user_id: userId, // null si es anónimo
-      },
-    ]);
-
-    if (error) {
-      console.error(error);
-      return res
-        .status(500)
-        .json({ success: false, msg: "Error al guardar en BD" });
-    }
-
+    const entry = JSON.stringify({
+      message: message.trim(),
+      timestamp: new Date().toISOString(),
+    });
+    fs.appendFileSync(FEEDBACK_FILE, entry + "\n");
     return res.json({ success: true, msg: "Sugerencia guardada con éxito" });
   } catch (err) {
-    console.error(err);
-    return res
-      .status(500)
-      .json({ success: false, msg: "Error interno del servidor" });
+    console.error("Error guardando feedback:", err);
+    return res.status(500).json({ success: false, msg: "Error al guardar sugerencia" });
   }
 };

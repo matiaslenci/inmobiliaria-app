@@ -676,12 +676,9 @@
     </main>
 
     <script>
-      // Animate elements on load
       document.addEventListener("DOMContentLoaded", function () {
-        const animatedElements = document.querySelectorAll(
-          ".animate-fade-in-up"
-        );
-
+        // Animate elements on load
+        const animatedElements = document.querySelectorAll(".animate-fade-in-up");
         const observer = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
@@ -693,45 +690,29 @@
               }
             });
           },
-          {
-            threshold: 0.1,
-          }
+          { threshold: 0.1 }
         );
-
         animatedElements.forEach((el) => observer.observe(el));
-      });
 
-      // Format currency values
-      document.addEventListener("DOMContentLoaded", function () {
-        const currencyElements = document.querySelectorAll(".currency");
-        currencyElements.forEach((el) => {
+        // Format currency values
+        document.querySelectorAll(".currency").forEach((el) => {
           const value = el.textContent.replace("$", "");
           if (!isNaN(value) && value !== "") {
-            const formatted = parseFloat(value).toLocaleString("es-AR", {
+            el.textContent = parseFloat(value).toLocaleString("es-AR", {
               style: "currency",
               currency: "ARS",
               minimumFractionDigits: 2,
             });
-            el.textContent = formatted;
           }
         });
+
+        // Export button handler
+        const exportBtn = document.getElementById("exportar-excel");
+        if (exportBtn) {
+          exportBtn.addEventListener("click", exportResults);
+        }
       });
 
-      // Add row hover effects
-      document.addEventListener("DOMContentLoaded", function () {
-        const tableRows = document.querySelectorAll(".results-table tbody tr");
-        tableRows.forEach((row, index) => {
-          row.addEventListener("mouseenter", function () {
-            this.style.backgroundColor = "rgba(66, 133, 244, 0.04)";
-          });
-
-          row.addEventListener("mouseleave", function () {
-            this.style.backgroundColor = "";
-          });
-        });
-      });
-
-      // Exportar resultados a Excel
       function exportResults() {
         const exportBtn = document.getElementById("exportar-excel");
         if (!exportBtn) return;
@@ -831,16 +812,6 @@
           });
       }
 
-      // Attach export handler
-      document.addEventListener("DOMContentLoaded", function () {
-        const exportBtn = document.getElementById("exportar-excel");
-        if (exportBtn) {
-          exportBtn.addEventListener("click", function (e) {
-            e.preventDefault();
-            exportResults();
-          });
-        }
-      });
     </script>
   </body>
 </html>

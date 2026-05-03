@@ -3,111 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>
-      Calculadora de Tasas Inmobiliarias Santo Tomé, Santa Fe y Sauce Viejo |
-      Tasas Municipales
-    </title>
-    <meta
-      name="description"
-      content="Calculadora de tasas urbanas inmobiliarias y municipales para Santo Tomé, Santa Fe y Sauce Viejo. Procesa archivos Excel automáticamente. Cálculo preciso de impuestos inmobiliarios municipales."
-    />
-    <meta
-      name="keywords"
-      content="tasas urbanas inmobiliarias santo tome, tasas municipales santa fe, sauce viejo tasas, calculadora impuestos inmobiliarios, tasas municipales argentina, santo tome santa fe, excel tasas municipales, calculadora inmobiliaria municipal"
-    />
-
-    <!-- SEO Meta Tags -->
-    <meta name="author" content="Matias Lenci" />
-    <meta name="robots" content="index, follow" />
-    <meta name="language" content="Spanish" />
-    <meta name="distribution" content="web" />
-    <meta name="rating" content="general" />
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://tasas-inmobiliarias.com/" />
-    <meta
-      property="og:title"
-      content="Calculadora de Tasas Inmobiliarias Santo Tomé, Santa Fe y Sauce Viejo"
-    />
-    <meta
-      property="og:description"
-      content="Herramienta  para calcular tasas inmobiliarias y municipales de Santo Tomé, Santa Fe y Sauce Viejo. Procesamiento automático desde Excel."
-    />
-    <meta property="og:image" content="/assets/calculator-og.png" />
-    <meta property="og:locale" content="es_AR" />
-    <meta property="og:site_name" content="Tasas Inmobiliarias Municipales" />
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://tasas-inmobiliarias.com/" />
-    <meta
-      property="twitter:title"
-      content="Calculadora de Tasas Inmobiliarias Santo Tomé, Santa Fe y Sauce Viejo"
-    />
-    <meta
-      property="twitter:description"
-      content="Calculadora  de tasas municipales para Santo Tomé, Santa Fe y Sauce Viejo. Procesamiento automático desde Excel."
-    />
-    <meta property="twitter:image" content="/assets/calculator-og.png" />
-
-    <!-- Geo Meta Tags -->
-    <meta name="geo.region" content="AR-S" />
-    <meta name="geo.placename" content="Santo Tomé, Santa Fe, Argentina" />
-    <meta name="geo.position" content="-31.6631;-60.7631" />
-    <meta name="ICBM" content="-31.6631, -60.7631" />
-
-    <!-- Local Business Schema -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "GovernmentService",
-        "name": "Calculadora de Tasas Inmobiliarias Santo Tomé",
-        "description": "Servicio municipal para el cálculo de tasas inmobiliarias en Santo Tomé, Santa Fe y Sauce Viejo",
-        "provider": {
-          "@type": "GovernmentOrganization",
-          "name": "Municipio de Santo Tomé",
-          "address": {
-            "@type": "PostalAddress",
-            "addressLocality": "Santo Tomé",
-            "addressRegion": "Santa Fe",
-            "addressCountry": "AR"
-          }
-        },
-        "areaServed": [
-          {
-            "@type": "City",
-            "name": "Santo Tomé",
-            "addressRegion": "Santa Fe",
-            "addressCountry": "Argentina"
-          },
-          {
-            "@type": "City",
-            "name": "Santa Fe",
-            "addressRegion": "Santa Fe",
-            "addressCountry": "Argentina"
-          },
-          {
-            "@type": "City",
-            "name": "Sauce Viejo",
-            "addressRegion": "Santa Fe",
-            "addressCountry": "Argentina"
-          }
-        ],
-        "serviceType": "Cálculo de Tasas Inmobiliarias Municipales",
-        "url": "https://tasas-inmobiliarias.com/"
-      }
-    </script>
-
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="/manifest.json" />
-
-    <!-- Theme color for mobile browsers -->
-    <meta name="theme-color" content="#4285f4" />
-    <meta name="msapplication-TileColor" content="#4285f4" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="Tasas Municipales" />
+    <title>Calculadora de Tasas Municipales</title>
 
     <!-- Font Awesome for Icons -->
     <link
@@ -800,8 +696,6 @@
     </style>
   </head>
   <body>
-    <!-- Navigation -->
-    <!-- Navigation -->
     <nav class="navbar">
       <div class="navbar-content">
         <a href="/" class="navbar-brand">
@@ -809,22 +703,9 @@
           <p class="navbar-title">Calculadora de Tasas Municipales</p>
         </a>
         <div class="navbar-actions">
-          <% if (user) { %>
-          <span class="user-email"><%= user.email %></span>
-          <form action="/logout" method="POST" style="display: inline">
-            <button type="submit" class="btn-nav btn-nav-primary">
-              <i class="fas fa-sign-out-alt"></i>
-              Cerrar Sesión
-            </button>
-          </form>
-          <% } else { %>
-          <a href="/login" class="btn-nav btn-nav-ghost">
-            <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+          <a href="/consulta-sauce" class="btn-nav btn-nav-ghost">
+            <i class="fas fa-search"></i> Consulta Sauce Viejo
           </a>
-          <a href="/register" class="btn-nav btn-nav-primary">
-            <i class="fas fa-user-plus"></i> Registrarse
-          </a>
-          <% } %>
         </div>
       </div>
     </nav>
@@ -1191,9 +1072,6 @@
         const mesActual = meses[hoy.getMonth()];
         const mesSiguiente = meses[(hoy.getMonth() + 1) % 12];
 
-        console.log("Mes actual:", mesActual);
-        console.log("Mes siguiente:", mesSiguiente);
-
         const radios = document.querySelectorAll('input[name="periodo"]');
         const btnTextElement = document.getElementById("btnText");
 
@@ -1240,44 +1118,25 @@
         });
 
         // Verificar que todos los elementos existan antes de modificarlos
-        if (
-          esteMesTitulo &&
-          esteMesSubtitulo &&
-          mesSigTitulo &&
-          mesSigSubtitulo
-        ) {
-          console.log("Actualizando textos...");
-          // Setear textos iniciales
+        if (esteMesTitulo && esteMesSubtitulo && mesSigTitulo && mesSigSubtitulo) {
           esteMesTitulo.textContent = `Mes de ${mesActual}`;
           esteMesSubtitulo.textContent = `Obtener montos de ${mesActual}`;
           mesSigTitulo.textContent = `Mes de ${mesSiguiente}`;
           mesSigSubtitulo.textContent = `Obtener montos de ${mesSiguiente}`;
-          console.log("Textos actualizados");
-        } else {
-          console.error("No se encontraron todos los elementos necesarios");
         }
 
-        // Actualizar botón según radio seleccionado
         function updateBtnText() {
-          const seleccionado = document.querySelector(
-            'input[name="periodo"]:checked'
-          );
+          const seleccionado = document.querySelector('input[name="periodo"]:checked');
           if (seleccionado && btnTextElement) {
-            if (seleccionado.value === "este-mes") {
-              btnTextElement.textContent = `Calcular Tasas de ${mesActual}`;
-            } else {
-              btnTextElement.textContent = `Calcular Tasas de ${mesSiguiente}`;
-            }
-            console.log("Botón actualizado:", btnTextElement.textContent);
+            btnTextElement.textContent = seleccionado.value === "este-mes"
+              ? `Calcular Tasas de ${mesActual}`
+              : `Calcular Tasas de ${mesSiguiente}`;
           }
         }
 
-        // Solo ejecutar si hay elementos válidos
         if (btnTextElement && radios.length > 0) {
-          updateBtnText(); // inicializa al cargar
-          radios.forEach((radio) =>
-            radio.addEventListener("change", updateBtnText)
-          );
+          updateBtnText();
+          radios.forEach((radio) => radio.addEventListener("change", updateBtnText));
         }
       });
     </script>
