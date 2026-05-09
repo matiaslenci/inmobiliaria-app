@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\matia\\\\Desktop\\\\matias\\\\Programacion\\\\proyectos\\\\inmobiliaria-app\" -Force)",
+      "Bash(Select-Object Name, PSIsContainer)",
+      "Bash(npm run *)",
+      "Read(//c/Users/matia/AppData/Local/Temp/claude/C--Users-matia-Desktop-matias-Programacion-proyectos-inmobiliaria-app/b76f1480-a602-4dc4-8cd7-57358b58ec9a/tasks/**)",
+      "Bash(curl -s -o /dev/null -w \"GET /  -> HTTP %{http_code}\\\\n\" http://localhost:3000/)",
+      "Bash(curl -s -o /dev/null -w \"GET /login \\(debe 404\\) -> HTTP %{http_code}\\\\n\" http://localhost:3000/login)",
+      "Bash(curl -s -o /dev/null -w \"GET /admin \\(debe 404\\) -> HTTP %{http_code}\\\\n\" http://localhost:3000/admin)",
+      "Bash(curl -s -o /dev/null -w \"POST /feedback \\(debe 404\\) -> HTTP %{http_code}\\\\n\" -X POST http://localhost:3000/feedback)",
+      "Bash(curl -s -o /dev/null -w \"GET /plantilla -> HTTP %{http_code}\\\\n\" http://localhost:3000/plantilla)",
+      "Bash(node *)",
+      "Bash(curl -s -X POST -F \"archivoExcel=@/tmp/test-small.xlsx\" -F \"periodo=mes-siguiente\" http://localhost:3000/upload -o /tmp/upload-result.html -w \"HTTP %{http_code}\\\\n\")",
+      "Read(//tmp/**)",
+      "Bash(netstat -ano)",
+      "Bash(tasklist)",
+      "Bash(curl *)",
+      "Bash(wmic process *)",
+      "PowerShell(Get-CimInstance *)",
+      "PowerShell(Get-Process *)",
+      "Bash(grep -E \"Error al obtener|currency.*\\\\\\\\\\\\$\" /c/Users/matia/AppData/Local/Temp/upload-result.html)"
+    ]
+  }
+}

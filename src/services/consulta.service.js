@@ -16,11 +16,15 @@ export const obtenerMontoAgua = async (nroCuenta, filaIndice = 1) => {
         },
         body: new URLSearchParams({
           parametricos: "9",
-          parametricoSeleccionado: "",
+          parametricoSeleccionado: "9",
           nroCuenta: String(nroCuenta),
           nroConvenio: "",
           codObra: "",
           nroContrato: "",
+          cuadro: "",
+          seccion: "",
+          fila: "",
+          numero: "",
         }),
         signal: controller.signal,
       }
@@ -71,11 +75,15 @@ export const obtenerMontoTasas = async (nroCuenta, filaIndice = 1) => {
         },
         body: new URLSearchParams({
           parametricos: "5",
-          parametricoSeleccionado: "",
+          parametricoSeleccionado: "5",
           nroCuenta: String(nroCuenta),
           nroConvenio: "",
           codObra: "",
           nroContrato: "",
+          cuadro: "",
+          seccion: "",
+          fila: "",
+          numero: "",
         }),
         signal: controller.signal,
       }

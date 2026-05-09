@@ -6,7 +6,6 @@ import {
   descargarPlantilla,
   descargarResultados,
 } from "../controllers/consulta.controller.js";
-import { authRequired } from "../middlewares/auth-guard.js";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -16,7 +15,7 @@ const __dirname = path.dirname(__filename);
 const router = Router();
 
 router.get("/", uploadExcel);
-router.post("/upload", authRequired, uploadExcelMiddleware, procesarConsulta);
+router.post("/upload", uploadExcelMiddleware, procesarConsulta);
 
 router.get("/plantilla", descargarPlantilla);
 router.post("/exportar-resultados", descargarResultados);
