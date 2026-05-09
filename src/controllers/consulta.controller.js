@@ -5,8 +5,10 @@ import {
 import multer from "multer";
 import xlsx from "xlsx";
 import fs from "fs";
+import os from "os";
+import path from "path";
 
-const upload = multer({ dest: "uploads/" });
+const upload = multer({ dest: path.join(os.tmpdir(), "tasas-uploads") });
 
 export const uploadExcelMiddleware = upload.single("archivoExcel");
 

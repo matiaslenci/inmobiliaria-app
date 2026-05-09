@@ -158,3 +158,48 @@ inmobiliaria-app/
 ---
 
 **Nota**: Asegúrate de configurar correctamente Supabase antes de ejecutar la aplicación. El sistema de autenticación no funcionará sin las credenciales correctas.
+
+ 1. Descargar el binario de Electron:
+
+  npm rebuild electron
+
+  Tarda 1-2 minutos (~120 MB).
+
+  2. Probar que arranca (modo desarrollo, sin instalar nada):
+
+  npm run electron
+
+  Debería abrirse una ventana con tu app. Cerrala cuando confirmes que funciona.
+
+  3. Generar el instalador .exe:
+
+  npm run electron:build
+
+  Tarda 2-5 minutos. Cuando termine vas a tener:
+
+  dist\Tasas Inmobiliarias Setup 1.0.0.exe
+
+  Ese es el instalador. Hacés doble clic, te deja elegir carpeta, te crea acceso directo en escritorio y menú Inicio.
+  Eso es lo que distribuís a tus usuarios — lo descargan, lo ejecutan, queda instalada como cualquier otra app de
+  Windows.
+
+  Si querés probarlo vos mismo: ejecutá ese .exe y la app queda instalada en tu PC también.
+
+Para futuras instalaciones en este proyecto, el binario ya está en node_modules/electron/dist/ y no
+necesitará descargarse de nuevo.
+
+ Solo tenés que correr:
+
+  npm run electron:build
+
+  Eso usa electron-builder y genera un instalador .exe (NSIS) en la carpeta dist/. El cliente solo necesita
+  ese archivo para instalar la app.
+
+  Lo que va a generar:
+  - dist/Tasas Inmobiliarias Setup 1.0.0.exe — instalador para el cliente
+  - Crea acceso directo en el escritorio y menú inicio
+  - El cliente puede elegir dónde instalar
+
+  Aviso importante: el mismo problema de red puede ocurrir durante el build porque electron-builder también
+  descarga binarios de GitHub (el builder mismo). Si falla, avisame y lo solucionamos igual que antes con
+  PowerShell.

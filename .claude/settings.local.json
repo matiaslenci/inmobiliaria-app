@@ -19,7 +19,15 @@
       "Bash(wmic process *)",
       "PowerShell(Get-CimInstance *)",
       "PowerShell(Get-Process *)",
-      "Bash(grep -E \"Error al obtener|currency.*\\\\\\\\\\\\$\" /c/Users/matia/AppData/Local/Temp/upload-result.html)"
+      "Bash(grep -E \"Error al obtener|currency.*\\\\\\\\\\\\$\" /c/Users/matia/AppData/Local/Temp/upload-result.html)",
+      "Bash(npm install *)",
+      "Bash(npm rebuild *)",
+      "PowerShell(npm install *)",
+      "PowerShell(npm run *)",
+      "PowerShell(node -e \"const pkg = require\\('./node_modules/electron/package.json'\\); console.log\\('Electron version:', pkg.version\\)\")",
+      "PowerShell(Remove-Item *)",
+      "PowerShell($url = \"https://github.com/electron/electron/releases/download/v42.0.1/electron-v42.0.1-win32-x64.zip\"; $out = \"$env:TEMP\\\\electron-v42.0.1-win32-x64.zip\"; Write-Host \"Descargando desde: $url\"; Invoke-WebRequest -Uri $url -OutFile $out -UseBasicParsing; Write-Host \"Descargado en: $out\")",
+      "PowerShell(New-Item *)"
     ]
   }
 }

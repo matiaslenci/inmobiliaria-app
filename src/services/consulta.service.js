@@ -3,7 +3,7 @@ import * as cheerio from "cheerio";
 export const obtenerMontoAgua = async (nroCuenta, filaIndice = 1) => {
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2000); // 10 segundos timeout
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
 
     const response = await fetch(
       "https://servicios.santotome.gob.ar:8443/liquidacionesweb/buscarLiquidaciones.do",

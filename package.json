@@ -2,11 +2,13 @@
   "name": "inmobiliaria-app",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "electron/main.cjs",
   "scripts": {
     "build": "echo 'no build needed'",
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "electron": "electron .",
+    "electron:build": "electron-builder --win"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +30,43 @@
   },
   "devDependencies": {
     "cross-env": "^10.0.0",
+    "electron": "^42.0.1",
+    "electron-builder": "^26.8.1",
     "nodemon": "^3.1.10"
+  },
+  "build": {
+    "appId": "com.tasas.inmobiliariaapp",
+    "productName": "Tasas Inmobiliarias",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron/**/*",
+      "src/**/*",
+      "public/**/*",
+      "server.js",
+      "package.json"
+    ],
+    "asarUnpack": [
+      "node_modules/playwright/**/*",
+      "node_modules/playwright-core/**/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
   }
 }
